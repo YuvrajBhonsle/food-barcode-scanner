@@ -1,0 +1,43 @@
+// This is an example using Node.js and Express framework
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const azure = require('azure-storage');
+
+const app = express();
+app.use(bodyParser.json());
+
+// Azure Storage connection string and table name
+const connectionString = '<your-azure-storage-connection-string>';
+const tableName = 'barcodeData';
+
+// API endpoint to receive barcode information
+app.post('/barcode', (req, res) => {
+  const { barcode, location, deviceId } = req.body;
+  const timestamp = new Date().toISOString();
+
+  // Store the data in Azure Table Storage
+  const tableService = azure.createTableService(connectionString);
+  const entity = {
+    PartitionKey: 'barcode',
+    RowKey: barcode,
+    Location: location,
+    DeviceId: deviceId,
+    Timestamp: timestamp
+  };
+  tableService.insertEntity(tableName, entity, (error, result, response) => {
+    if (error) {
+      console.error('Error storing barcode data:', error);
+      res.status(500).send('Error storing barcode data');
+    } else {
+      console.log('Barcode data stored successfully');
+      res.status(200).send('Barcode data stored successfully');
+    }
+  });
+});
+
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
