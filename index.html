@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Current Time and Hello, World!</title>
+</head>
+<body>
+  <h1>Current Time</h1>
+  <p id="current-time"></p>
+
+  <h1>Hello, World!</h1>
+  <p>Welcome to my web page.</p>
+
+  <script>
+    // Get the current time and display it
+    var currentTimeElement = document.getElementById("current-time");
+    var currentTime = new Date().toLocaleTimeString();
+    currentTimeElement.textContent = currentTime;
+  </script>
+</body>
+</html>
