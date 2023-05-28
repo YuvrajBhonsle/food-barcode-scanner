@@ -8,6 +8,8 @@
     <h1>FoodScanGenius</h1>
     <p>Scan your product to find if it's suitable for you</p>
     <div id="map"></div>
+    <button onclick="scanBarcode()">Click here to scan your barcode</button>
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.18.4/esm/index.js"></script>
     <script>
         function initMap() {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -22,6 +24,14 @@
                     title: 'Your Location'
                 });
             });
+        }
+        function scanBarcode() {
+            const codeReader = new ZXing.BrowserMultiFormatReader()
+            codeReader.decodeFromInputVideoDevice(undefined, 'video').then((result) => {
+                console.log(result.text)
+            }).catch((err) => {
+                console.error(err)
+            })
         }
         initMap();
     </script>
