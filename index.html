@@ -1,34 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Webapp new root</title>
-    <script>
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
-        }
-
-        function showPosition(position) {
-            var lat = position.coords.latitude;
-            var long = position.coords.longitude;
-            var date = new Date();
-            var localTime = date.toLocaleTimeString();
-            var ISTTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}).split(", ")[1];
-            document.getElementById("coordinates").innerHTML = "Latitude: " + lat + "<br>Longitude: " + long;
-            document.getElementById("location").innerHTML = "Location: " + position.coords.latitude + ", " + position.coords.longitude;
-            document.getElementById("localTime").innerHTML = "Local Time: " + localTime;
-            document.getElementById("ISTTime").innerHTML = "Indian Standard Time: " + ISTTime;
-        }
-    </script>
+  <title>Current Time, Location, and Hello, World!</title>
 </head>
-<body onload="getLocation()">
-    <h1>Webapp in Index</h1>
-    <p id="coordinates"></p>
-    <p id="location"></p>
-    <p id="localTime"></p>
-    <p id="ISTTime"></p>
+<body>
+  <h1>Current Time</h1>
+  <p id="current-time"></p>
+
+  <h1>Location</h1>
+  <p id="coordinates"></p>
+  <p id="location"></p>
+
+  <h1>Hello, World!</h1>
+  <p>Welcome to my web page.</p>
+
+  <script>
+    // Get the current time and display it
+    var currentTimeElement = document.getElementById("current-time");
+    var currentTime = new Date().toLocaleTimeString();
+    currentTimeElement.textContent = currentTime;
+
+    // Get the user's location and display it
+    var coordinatesElement = document.getElementById("coordinates");
+    var locationElement = document.getElementById("location");
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+      coordinatesElement.textContent = "Geolocation is not supported by this browser.";
+    }
+
+    function success(position) {
+      var latitude = position.coords.latitude;
+      var longitude = position.coords.longitude;
+      coordinatesElement.textContent = "GPS Coordinates: " + latitude + ", " + longitude;
+
+      // Fetch location information using reverse geocoding
+      fetch(
+        "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+          latitude +
+          "&lon=" +
+          longitude
+      )
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          var address = data.display_name;
+          locationElement.textContent = "Location: " + address;
+        })
+        .catch(function (error) {
+          console.log("Error fetching location:", error);
+          locationElement.textContent = "Error fetching location.";
+        });
+    }
+
+    function error() {
+      coordinatesElement.textContent = "Unable to retrieve GPS coordinates.";
+      locationElement.textContent = "Unable to retrieve location.";
+    }
+  </script>
 </body>
 </html>
