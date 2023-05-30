@@ -1,17 +1,25 @@
-import React from 'react';
-import {Text, View} from 'react-native';
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FoodScanGenius</title>
+</head>
+<body>
+  <h1>FoodScanGenius</h1>
+  <p>Welcome, enter a Barcode number to analyze:</p>
+  <input type="text" id="barcodeInput">
+  <button onclick="getBarcode()">Analyze</button>
+  <p id="result"></p>
+  <p id="dateTimeLocation"></p>
 
-const YourApp = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Text>Try editing me! 🎉</Text>
-    </View>
-  );
-};
+  <script>
+    function getBarcode() {
+      var barcode = document.getElementById("barcodeInput").value;
+      var dateTime = new Date().toLocaleString(); // Get current date and time
+      var location = "Your Location"; // Replace with the actual location information
 
-export default YourApp;
+      document.getElementById("result").textContent = "Barcode: " + barcode;
+      document.getElementById("dateTimeLocation").textContent = "Date & Time: " + dateTime + " | Location: " + location;
+    }
+  </script>
+</body>
+</html>
