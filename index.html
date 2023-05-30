@@ -1,135 +1,96 @@
-<!DOCTYPE html>
 <html>
 <head>
   <title>FoodScanGenius</title>
   <style>
-    /* Your CSS styles here */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    p {
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    select {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .error {
+      color: #ff0000;
+    }
+
+    .product-name {
+      font-weight: bold;
+      margin-top: 0;
+    }
+
+    .nutrition-facts {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    .nutrition-facts li {
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
   <h1>FoodScanGenius</h1>
-  <p>Welcome! Select a barcode from the list to analyze:</p>
-  <select id="barcodeSelect">
-    <option value="">Select Barcode</option>
-    <option value="021000010875">021000010875</option>
-    <option value="021000010882">021000010882</option>
-    <option value="021000028207">021000028207</option>
-    <option value="021000658831">021000658831</option>
-    <option value="021000658862">021000658862</option>
-    <option value="012546008679">012546008679</option>
-    <option value="012546008693">012546008693</option>
-    <option value="019320068331">019320068331</option>
-    <option value="044000029555">044000029555</option>
-    <option value="019320013744">019320013744</option>
-    <option value="028400154437">028400154437</option>
-    <option value="028400443555">028400443555</option>
-    <option value="028400000222">028400000222</option>
-    <option value="028400249645">028400249645</option>
-    <option value="028400000789">028400000789</option>
-    <option value="012000018794">012000018794</option>
-    <option value="012000809958">012000809958</option>
-    <option value="012000381232">012000381232</option>
-    <option value="012000620362">012000620362</option>
-    <option value="012000100482">012000100482</option>
-    <option value="034000011605">034000011605</option>
-    <option value="034000040476">034000040476</option>
-    <option value="036632014009">036632014009</option>
-    <option value="068274934711">068274934711</option>
-    <option value="050000111879">050000111879</option>
-  </select>
-  <button onclick="getBarcodeDetails()">Analyze</button>
-  <div id="result"></div>
-
-  <script>
-    function getBarcodeDetails() {
-      var barcodeSelect = document.getElementById("barcodeSelect");
-      var selectedBarcode = barcodeSelect.value;
-
-      if (selectedBarcode) {
-        // Fetch data from Open Food Facts API
-        var openFoodFactsURL = "https://world.openfoodfacts.org/api/v0/product/" + selectedBarcode + ".json";
-        fetch(openFoodFactsURL)
-          .then(response => response.json())
-          .then(data => {
-            // Process the response and display the results
-            displayOpenFoodFactsResults(data);
-          })
-          .catch(error => {
-            // Display error message if the request fails
-            displayError();
-          });
-
-        // Fetch data from UPCitemdb API
-        var upcItemdbURL = "https://api.upcitemdb.com/prod/trial/lookup?upc=" + selectedBarcode;
-        fetch(upcItemdbURL)
-          .then(response => response.json())
-          .then(data => {
-            // Process the response and display the results
-            displayUPCitemdbResults(data);
-          })
-          .catch(error => {
-            // Display error message if the request fails
-            displayError();
-          });
-      } else {
-        // Display error message if no barcode is selected
-        displayError();
-      }
-    }
-
-    function displayOpenFoodFactsResults(response) {
-      var resultContainer = document.getElementById("result");
-      resultContainer.innerHTML = ""; // Clear previous results
-
-      if (response.status === 1) {
-        var product = response.product;
-
-        var productName = product.product_name;
+@@ -77,13 +141,13 @@ <h1>FoodScanGenius</h1>
         var ingredients = product.ingredients_text;
         var nutritionFacts = product.nutriments;
 
         var resultHTML = "<h2>Product: " + productName + "</h2>";
+        var resultHTML = "<h2 class='product-name'>Product: " + productName + "</h2>";
         resultHTML += "<p>Ingredients: " + ingredients + "</p>";
         resultHTML += "<h3>Nutrition Facts:</h3>";
         resultHTML += "<ul>";
+        resultHTML += "<ul class='nutrition-facts'>";
         for (var property in nutritionFacts) {
           if (nutritionFacts.hasOwnProperty(property)) {
+            resultHTML += "<li>" + property + ": " + nutritionFacts[property] + "</li>";
             resultHTML += "<li><strong>" + property + ":</strong> " + nutritionFacts[property] + "</li>";
           }
         }
         resultHTML += "</ul>";
-
-        resultContainer.innerHTML += resultHTML;
-      } else {
-        // Display error message if Open Food Facts data is not available
-        resultContainer.innerHTML += "<p class='error'>Error: Unable to retrieve barcode information from Open Food Facts.</p>";
-      }
-    }
-
-    function displayUPCitemdbResults(response) {
-      var resultContainer = document.getElementById("result");
-
-      if (response.code === "OK" && response.items.length > 0) {
-        var product = response.items[0];
-
-        var productName = product.title;
-        var brand = product.brand;
-        var manufacturer = product.manufacturer;
-
-        var resultHTML = "<h2>Product: " + productName + "</h2>";
-        resultHTML += "<p>Brand: " + brand + "</p>";
-        resultHTML += "<p>Manufacturer: " + manufacturer + "</p>";
-
-        resultContainer.innerHTML += resultHTML;
-      } else {
-        // Display error message if UPCitemdb data is not available
-        resultContainer.innerHTML += "<p class='error'>Error: Unable to retrieve barcode information from UPCitemdb.</p>";
-      }
-    }
+@@ -96,7 +160,7 @@ <h1>FoodScanGenius</h1>
 
     function displayError() {
       var resultContainer = document.getElementById("result");
-      resultContainer.innerHTML += "<p class='error'>Error: Unable to retrieve barcode information.</p>";
+      resultContainer.innerHTML = "<p>Error: Unable to retrieve barcode information.</p>";
+      resultContainer.innerHTML = "<p class='error'>Error: Unable to retrieve barcode information.</p>";
     }
   </script>
 </body>
