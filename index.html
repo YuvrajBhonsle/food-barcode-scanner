@@ -4,76 +4,66 @@
   <title>FoodScanGenius</title>
   <style>
     body {
-      background-color: #F3F3F3;
       font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
 
     h1 {
-      color: #333333;
+      color: #333;
       text-align: center;
-      margin-top: 30px;
     }
 
     p {
-      color: #666666;
-      text-align: center;
+      color: #555;
+      margin-bottom: 10px;
     }
 
     select {
-      width: 300px;
-      padding: 10px;
+      padding: 8px;
       font-size: 16px;
-      margin: 20px auto;
-      display: block;
+      border-radius: 4px;
     }
 
     button {
-      background-color: #FECB2E;
-      color: #333333;
-      border: none;
       padding: 10px 20px;
       font-size: 16px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
-      margin-bottom: 20px;
     }
 
     button:hover {
-      background-color: #FDB41C;
+      background-color: #45a049;
     }
 
     #result {
-      background-color: #FFFFFF;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 0 auto;
-      max-width: 600px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-      color: #FF5733;
-      margin-top: 0;
-    }
-
-    h3 {
-      color: #2962FF;
-      margin-top: 0;
-    }
-
-    ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    li {
-      margin-bottom: 5px;
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .error {
-      color: #FF0000;
+      color: #ff0000;
+    }
+
+    .product-name {
+      font-weight: bold;
+      margin-top: 0;
+    }
+
+    .nutrition-facts {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    .nutrition-facts li {
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -112,7 +102,66 @@
   <div id="result"></div>
 
   <script>
-    // JavaScript code here...
+    function getBarcodeDetails() {
+      var barcodeSelect = document.getElementById("barcodeSelect");
+      var selectedBarcode = barcodeSelect.value;
+
+      if (selectedBarcode) {
+        var apiURL = "https://world.openfoodfacts.org/api/v0/product/" + selectedBarcode + ".json";
+
+        // Make AJAX request
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", apiURL, true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            // Process the response and display the results
+            displayResults(response);
+          } else {
+            // Display error message if the request fails
+            displayError();
+          }
+        };
+        xhr.send();
+      } else {
+        // Display error message if no barcode is selected
+        displayError();
+      }
+    }
+
+    function displayResults(response) {
+      var resultContainer = document.getElementById("result");
+      resultContainer.innerHTML = ""; // Clear previous results
+
+      if (response.status === 1) {
+        var product = response.product;
+
+        var productName = product.product_name;
+        var ingredients = product.ingredients_text;
+        var nutritionFacts = product.nutriments;
+
+        var resultHTML = "<h2 class='product-name'>Product: " + productName + "</h2>";
+        resultHTML += "<p>Ingredients: " + ingredients + "</p>";
+        resultHTML += "<h3>Nutrition Facts:</h3>";
+        resultHTML += "<ul class='nutrition-facts'>";
+        for (var property in nutritionFacts) {
+          if (nutritionFacts.hasOwnProperty(property)) {
+            resultHTML += "<li><strong>" + property + ":</strong> " + nutritionFacts[property] + "</li>";
+          }
+        }
+        resultHTML += "</ul>";
+
+        resultContainer.innerHTML = resultHTML;
+      } else {
+        displayError();
+      }
+    }
+
+    function displayError() {
+      var resultContainer = document.getElementById("result");
+      resultContainer.innerHTML = "<p class='error'>Error: Unable to retrieve barcode information.</p>";
+    }
   </script>
 </body>
 </html>
