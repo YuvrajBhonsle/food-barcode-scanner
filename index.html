@@ -34,24 +34,69 @@
     <option value="068274934711">068274934711</option>
     <option value="050000111879">050000111879</option>
   </select>
-  <button onclick="getBarcode()">Analyze</button>
-  <p id="result"></p>
-  <p id="dateTimeLocation"></p>
+  <button onclick="getBarcodeDetails()">Analyze</button>
+  <div id="result"></div>
 
   <script>
-    function getBarcode() {
+    function getBarcodeDetails() {
       var barcodeSelect = document.getElementById("barcodeSelect");
       var selectedBarcode = barcodeSelect.value;
-      var dateTime = new Date().toLocaleString(); // Get current date and time
-      var location = "Your Location"; // Replace with the actual location information
 
       if (selectedBarcode) {
-        document.getElementById("result").textContent = "Barcode: " + selectedBarcode;
-        document.getElementById("dateTimeLocation").textContent = "Date & Time: " + dateTime + " | Location: " + location;
+        var apiURL = "https://world.openfoodfacts.org/api/v0/product/" + selectedBarcode + ".json";
+
+        // Make AJAX request
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", apiURL, true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            // Process the response and display the results
+            displayResults(response);
+          } else {
+            // Display error message if the request fails
+            displayError();
+          }
+        };
+        xhr.send();
       } else {
-        document.getElementById("result").textContent = "Please select a valid barcode.";
-        document.getElementById("dateTimeLocation").textContent = "";
+        // Display error message if no barcode is selected
+        displayError();
       }
+    }
+
+    function displayResults(response) {
+      var resultContainer = document.getElementById("result");
+      resultContainer.innerHTML = ""; // Clear previous results
+
+      if (response.status === 1) {
+        var product = response.product;
+
+        var productName = product.product_name;
+        var ingredients = product.ingredients_text;
+        var nutritionFacts = product.nutriments;
+
+        var resultHTML = "<h2>Product: " + productName + "</h2>";
+        resultHTML += "<p>Ingredients: " + ingredients + "</p>";
+        resultHTML += "<h3>Nutrition Facts:</h3>";
+        resultHTML += "<ul>";
+        for (var property in nutritionFacts) {
+          if (nutritionFacts.hasOwnProperty(property)) {
+            resultHTML += "<li>" + property + ": " + nutritionFacts[property] + "</li>";
+          }
+        }
+        resultHTML += "</ul>";
+
+        resultContainer.innerHTML = resultHTML;
+      } else {
+        displayError();
+      }
+    }
+
+    function displayError() {
+      var resultContainer = document.getElementById("result");
+      resultContainer.innerHTML = "<p>Error: Unable to retrieve barcode information.</p>";
     }
   </script>
 </body>
