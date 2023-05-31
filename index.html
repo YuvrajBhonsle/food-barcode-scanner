@@ -71,6 +71,30 @@
     .nutrition-facts li {
       margin-bottom: 5px;
     }
+
+    .download-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #808080;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .download-button:hover {
+      background-color: #45a049;
+    }
+
+    .download-button:disabled {
+      background-color: #808080;
+      color: #ddd;
+      cursor: not-allowed;
+    }
+
+    .download-button:disabled:hover {
+      background-color: #808080;
+    }
     
     #location {
       margin-top: 20px;
@@ -96,8 +120,8 @@
 <body>
   <center>
   <h1>FoodScanGenius</h1>
-  <p>Welcome! Select a barcode from the list to analyze:</p>
-  <select id="barcodeSelect">
+  <p>Welcome! Select multiple barcodes from the list to analyze:</p>
+  <select id="barcodeSelect" multiple>
     <option value="">Select Barcode</option>
     <option value="021000010875">021000010875</option>
     <option value="021000010882">021000010882</option>
@@ -125,7 +149,11 @@
     <option value="068274934711">068274934711</option>
     <option value="050000111879">050000111879</option>
   </select>
+  
   <button onclick="getBarcodeDetails()">Analyze</button>
+  <br>
+  <br>
+  <button id="downloadButton" class="download-button" onclick="downloadReport()" disabled>Download Analysis Report</button>
   </center>
   <div id="location"></div>
   <div id="map"></div>
@@ -134,20 +162,20 @@
     <a href="aboutus.html">About Us</a>
     <a href="faq.html">FAQ</a>
     <a href="fsg.html">Why FoodScanGenius</a>
-    <a href="foodchoice.html">Food Choices</a>
+    <a href="foodchoice.html">Food Choices</a>  
   </div>
-
   <script>
     function getBarcodeDetails() {
       var barcodeSelect = document.getElementById("barcodeSelect");
-      var selectedBarcode = barcodeSelect.value;
+      var selectedBarcodes = Array.from(barcodeSelect.selectedOptions).map(option => option.value);
 
-      if (selectedBarcode) {
-        var apiURL = "https://world.openfoodfacts.org/api/v0/product/" + selectedBarcode + ".json";
+      if (selectedBarcodes.length) {
+        var apiURL = "http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode";
 
         // Make AJAX request
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", apiURL, true);
+        xhr.open("POST", apiURL, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4 && xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
@@ -159,10 +187,9 @@
             displayError();
           }
         };
-        xhr.send();
+        xhr.send(JSON.stringify({ number: selectedBarcodes }));
         
-        // Get location information and display on map
-        getLocation();
+        document.getElementById("downloadButton").disabled = false;
       } else {
         // Display error message if no barcode is selected
         displayError();
@@ -221,9 +248,16 @@
     }
     
     function showLocationError() {
-      var locationContainer = document.getElementById("location");
-      locationContainer.innerHTML = "Unable to retrieve location information.";
+        var locationContainer = document.getElementById("location");
+        locationContainer.innerHTML = "Unable to retrieve location information.";
     }
-  </script>
+        
+    function downloadReport() {
+      var link = document.createElement('a');
+      link.href = 'http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode';
+      link.download = 'Analysis_Report.csv';
+      link.click();
+    }
+    </script>
 </body>
 </html>
