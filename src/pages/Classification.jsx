@@ -4,6 +4,8 @@ import {FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram} from "react-icons/fa"
 
 const Classification = () => {
   return (
+    <>
+    <h1 className='text-center m-2 text-3xl font-semibold'>Classification of Food</h1>
     <section className='flex flex-col justify-center items-center my-auto'>
       <div className='flex flex-col justify-center items-center mb-20'>
       <h1 className=' text-3xl font-semibold mb-2'>COMING SOON</h1>
@@ -19,6 +21,7 @@ const Classification = () => {
         <span className='mx-2 cursor-pointer bg-black text-white rounded-[50%] p-4 hover:bg-gray-500 hover:text-black'><FaInstagram /></span>
       </div>
     </section>
+    </>
   )
 }
 
