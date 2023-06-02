@@ -46,6 +46,7 @@ const Navbar = () => {
             <li key={link.name} className="md:ml-8 text-xl md:my-0 my-7">
               <NavLink
                 to={link.link}
+                onClick={() => setOpen(!open)}
                 className="text-gray-800 hover:text-gray-400 duration-500"
               >
                 {link.name}
