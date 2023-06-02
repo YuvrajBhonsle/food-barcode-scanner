@@ -19,8 +19,8 @@ const Faq = () => {
                   setExpandedItem(index === expandedItem ? null : index)
                 }
               >
-                <h1 className="font-medium mr-2">{item.title}</h1>
-                {index === expandedItem ? <FaMinus /> : <FaPlus />}
+                <h1 className="font-medium mr-2 w-[50%]">{item.title}</h1>
+                <span>{index === expandedItem ? <FaMinus /> : <FaPlus />}</span>
               </div>
               {index === expandedItem && (
                 <div className="p-2 mt-2 w-[70vw] md:w-[50vw]">

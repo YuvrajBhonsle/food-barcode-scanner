@@ -1,25 +1,62 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import {FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram} from "react-icons/fa";
+import React, { useState } from "react";
+import {
+  FaChevronDown,
+  FaChevronUp,
+} from "react-icons/fa";
+
 
 const About = () => {
-  return (
-    <section className='flex flex-col justify-center items-center my-auto'>
-      <div className='flex flex-col justify-center items-center mb-20'>
-      <h1 className=' text-3xl font-semibold mb-2'>COMING SOON</h1>
-      <p className='text-lg'>We're working hard to finish the development of this site.</p>
-      <p className='text-lg mb-4'>Checkout the Scanner using the link below: </p>
-      <Link to="/"><p className='bg-black rounded p-3 text-white hover:text-black hover:bg-gray-500'>Go To Scanner Page</p></Link>
-      </div>
+  const [expandedItem, setExpandedItem] = useState(null);
 
-      <div className='flex'>
-        <span className='mx-2 cursor-pointer bg-black text-white rounded-[50%] p-4 hover:bg-gray-500 hover:text-black'><FaFacebookF /></span>
-        <span className='mx-2 cursor-pointer bg-black text-white rounded-[50%] p-4 hover:bg-gray-500 hover:text-black'><FaTwitter /></span>
-        <span className='mx-2 cursor-pointer bg-black text-white rounded-[50%] p-4 hover:bg-gray-500 hover:text-black'><FaLinkedinIn /></span>
-        <span className='mx-2 cursor-pointer bg-black text-white rounded-[50%] p-4 hover:bg-gray-500 hover:text-black'><FaInstagram /></span>
-      </div>
-    </section>
-  )
-}
+  return (
+    <>
+      <h1 className="text-center my-3 text-3xl font-semibold">Welcome to FoodScanGenius</h1>
+      <h1 className="text-center mb-3 text-xl font-semibold">Your Ultimate App for People with Dietary Restrictions</h1>
+      <section className="flex flex-col items-center justify-center mt-2 mb-5">
+          {data.map((item, index) => (
+            <div key={index} className='flex flex-col shadow group p-3'>
+              <div
+                className="text-xl flex items-center justify-between cursor-pointer w-[70vw] md:w-[50vw] group-hover:text-neutral-600"
+                onClick={() =>
+                  setExpandedItem(index === expandedItem ? null : index)
+                }
+              >
+                <h1 className="font-medium mr-2 w-[50%]">{item.title}</h1>
+                <span>{index === expandedItem ? <FaChevronUp /> : <FaChevronDown />}</span>
+              </div>
+              {index === expandedItem && (
+                <div className="p-2 w-[70vw] md:w-[50vw]">
+                  <p>{item.desc}</p>
+                </div>
+              )}
+            </div>
+          ))}
+      </section>
+    </>
+  );
+};
+
+const data = [
+  {
+    title: "Say Goodbye to Ingredient Worries",
+    desc: "Are you tired of reading through endless ingredient lists? FoodScanGenius is here to make your life easier. Our barcode scanning app quickly identifies if a product contains any ingredients that you are avoiding due to allergies, sensitivities, or dietary restrictions.",
+  },
+  {
+    title: "Simplify Your Grocery Shopping Experience",
+    desc: "Gone are the days of spending hours at the grocery store trying to decipher ingredient labels. With FoodScanGenius, simply scan the barcode of any product, and our app will provide you with instant information on its suitability for your dietary needs. Save time, reduce stress, and shop with confidence.",
+  },
+  {
+    title: "Dine Out with Confidence",
+    desc: "Eating out can be a challenge when you have dietary restrictions. FoodScanGenius empowers you to make informed decisions while dining out. Just scan the barcode on the menu item, and our app will quickly let you know if it's safe for you to enjoy. Say goodbye to anxiety and enjoy dining out again.",
+  },
+  {
+    title: "Track Your Nutrition Goals",
+    desc: "FoodScanGenius goes beyond ingredient scanning. Our app helps you track your nutrition and macronutrient intake, ensuring you stay on top of your health goals. Set personalized targets, monitor your progress, and make sure you're getting the nutrients you need, even with your dietary restrictions.",
+  },
+  {
+    title: "Download FoodScanGenius Today",
+    desc: "Don't let your dietary restrictions hold you back. Take control of your food choices with FoodScanGenius. Download the app now and experience the freedom and peace of mind it provides. Simplify your life, enjoy your meals, and embrace a healthier you. 'Your-Download-Link' Download Now.",
+  },
+];
 
 export default About

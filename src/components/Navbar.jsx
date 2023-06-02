@@ -7,8 +7,8 @@ import { NavLink, Link } from "react-router-dom";
 const Navbar = () => {
   let Links = [
     { name: "Home", link: "/" },
-    { name: "Classification", link: "/classification" },
-    { name: "Profile", link: "/profile" },
+    { name: "Food Choices", link: "/foodchoice" },
+    { name: "Why FoodScanGenius", link: "/fsg" },
     { name: "Social", link: "/social" },
     { name: "About Us", link: "/about" },
     { name: "FAQ", link: "/faq" },

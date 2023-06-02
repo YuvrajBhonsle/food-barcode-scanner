@@ -4,8 +4,8 @@ import "./App.css"
 import Navbar from './components/Navbar'
 import { Route, Routes } from 'react-router-dom'
 import Footer from './components/Footer'
-import Classification from './pages/Classification'
-import Profile from './pages/Profile'
+import FoodChoice from './pages/FoodChoice'
+import WhyFSG from './pages/WhyFSG'
 import Social from './pages/Social'
 import About from './pages/About'
 import Faq from './pages/Faq'
@@ -16,8 +16,8 @@ const App = () => {
     <Navbar />
     <Routes>
       <Route path='/' element={<Landing />} />
-      <Route path='/classification' element={<Classification />} />
-      <Route path='/profile' element={<Profile />} />
+      <Route path='/foodchoice' element={<FoodChoice />} />
+      <Route path='/fsg' element={<WhyFSG />} />
       <Route path='/social' element={<Social />} />
       <Route path='/about' element={<About />} />
       <Route path='/faq' element={<Faq />} />
