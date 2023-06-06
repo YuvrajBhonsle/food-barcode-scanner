@@ -22,6 +22,7 @@ export default function Hero() {
   // const [modalOpen, setModalOpen] = useState(false);
   const videoRef = useRef(null);
   const codeReaderRef = useRef(null);
+  const prevBarcodeValueRef = useRef("");
 
   useEffect(() => {
     handleUsername();
@@ -80,14 +81,14 @@ export default function Hero() {
         // console.log(dateTime);
         // console.log(userLocation);
         // console.log(dateTime);
-        const API_URL = `http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
-        // console.log(barcodeValue);
+        const API_URL = `http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json&barcode="${barcodeValue}"`;
         const response = await axios.get(API_URL);
         if(response.status === 200){
           const textData = response.data;
-          // console.log("textData: ", textData);
+          console.log("textData: ", textData);
+          console.log(barcodeValue);
+          console.log("Prev Barcode: ", prevBarcodeValueRef);
           setApiData(textData[0].data.barcode);
-          // console.log(barcodeValue);
           // setApiData(textData);
           // setBarcodeValue("");
           setStartScan(false);
@@ -110,7 +111,8 @@ export default function Hero() {
       }
     };
 
-    if (barcodeValue) {
+    if (barcodeValue && barcodeValue !== prevBarcodeValueRef.current) {
+      prevBarcodeValueRef.current = barcodeValue;
       fetchData();
       setApiData("");
     }
