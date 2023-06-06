@@ -85,9 +85,9 @@ export default function Hero() {
         const response = await axios.get(API_URL);
         if(response.status === 200){
           const textData = response.data;
-          console.log("textData: ", textData);
-          console.log(barcodeValue);
-          console.log("Prev Barcode: ", prevBarcodeValueRef);
+          // console.log("textData: ", textData);
+          // console.log(barcodeValue);
+          // console.log("Prev Barcode: ", prevBarcodeValueRef);
           setApiData(textData[0].data.barcode);
           // setApiData(textData);
           // setBarcodeValue("");
