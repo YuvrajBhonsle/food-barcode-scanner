@@ -14,7 +14,7 @@ export default function Hero() {
   // const [data, setData] = useState("Not Found");
   const [barcodeValue, setBarcodeValue] = useState("");
   const [apiData, setApiData] = useState([]);
-  const [startScan, setStartScan] = useState(true);
+  const [startScan, setStartScan] = useState(false);
   const [dateTime, setDateTime] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
@@ -31,7 +31,7 @@ export default function Hero() {
       .catch((error) =>
         console.error("Error in handleScanButtonClick:", error)
       );
-    // setStartScan(true);
+    setStartScan(true);
     // console.log("Scan start", startScan);
     // setModalOpen(true);
   }, []);
