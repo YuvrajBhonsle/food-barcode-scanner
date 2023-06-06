@@ -15,8 +15,12 @@ const Greeting = () => {
     }
   }, []);
 
+
   const parseLocalStorage = JSON.parse(localStorage.getItem("fsgUserData"));
-  const username = parseLocalStorage.username;
+  let username = "";
+  if(parseLocalStorage){
+    username = parseLocalStorage.username;
+  }
 
 
   return greeting + " " + username + "!";
