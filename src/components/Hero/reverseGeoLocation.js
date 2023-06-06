@@ -7,7 +7,7 @@ export const reverseGeoLocation = async (latitude, longitude, setUserLocation) =
     const geoResponse = await axios.get(REVERSE_API);
     if (geoResponse.status === 200) {
       const geoData = geoResponse.data;
-      console.log(geoData);
+      // console.log(geoData);
       // const loc = String(geoData.display_name);
       // const modifiedLoc = loc.split(" ").replace("-")
       setUserLocation(geoData.display_name);

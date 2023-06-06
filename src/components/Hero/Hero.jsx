@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BrowserBarcodeReader } from "@zxing/library";
-// import pako from "pako";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,7 +12,7 @@ import Greeting from "./Greeting";
 export default function Hero() {
   // const [data, setData] = useState("Not Found");
   const [barcodeValue, setBarcodeValue] = useState("");
-  const [apiData, setApiData] = useState([]);
+  const [apiData, setApiData] = useState("");
   const [startScan, setStartScan] = useState(false);
   const [dateTime, setDateTime] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -63,7 +62,6 @@ export default function Hero() {
   }, [startScan]);
 
   const handleScannerUpdate = (result) => {
-    // setStartScan(true);
     if (result && result.getText()) {
       const barcodeData = result.getText();
       // setData(barcodeData);
@@ -85,10 +83,15 @@ export default function Hero() {
         const API_URL = `http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
         // console.log(barcodeValue);
         const response = await axios.get(API_URL);
-        const textData = response;
-        // console.log("textData: ", textData);
-        // setApiData(textData);
-        setBarcodeValue("");
+        if(response.status === 200){
+          const textData = response.data;
+          // console.log("textData: ", textData);
+          setApiData(textData[0].data.barcode);
+          // console.log(barcodeValue);
+          // setApiData(textData);
+          // setBarcodeValue("");
+          setStartScan(false);
+        }
       } catch (error) {
         console.error("Error:", error);
         toast.error("Error fetching the data", {
@@ -101,11 +104,15 @@ export default function Hero() {
           progress: undefined,
           theme: "light",
         });
+      } finally{
+        setBarcodeValue("");
+        setStartScan(true);
       }
     };
 
     if (barcodeValue) {
       fetchData();
+      setApiData("");
     }
   }, [barcodeValue]);
 
@@ -151,7 +158,7 @@ export default function Hero() {
         Barcode Value: {barcodeValue}
       </p>
       <h1 className="scanned-data text-lg my-3 mx-auto font-bold w-[50%] md:[50%] text-center">
-      API data:</h1>
+      API data: {apiData}</h1>
       <div className="flex flex-col justify-center items-center w-1/2 md:flex-row mb-3">
         {/* <button
           className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
