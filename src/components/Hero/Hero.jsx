@@ -139,7 +139,7 @@ export default function Hero() {
   return (
     <section className="flex flex-col justify-center items-center">
       <div>
-        <h1 className="text-center text-xl font-semibold w-[80%] m-2">Food Scan Genius</h1>
+        <h1 className="text-center text-2xl font-bold m-2">Food Scan Genius</h1>
         <h4>
           <Greeting />
         </h4>
@@ -147,7 +147,7 @@ export default function Hero() {
       <div className="barcode-scanner m-3">
         <video ref={videoRef} className="video rounded-lg" />
       </div>
-      <p className="scanned-data text-xl m-3 font-bold">
+      <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
         Barcode Value: {barcodeValue}
       </p>
       <h1 className="scanned-data text-lg my-3 mx-auto font-bold w-[50%] md:[50%] text-center">
