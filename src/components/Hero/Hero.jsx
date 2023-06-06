@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BrowserBarcodeReader } from "@zxing/library";
-import pako from "pako";
+// import pako from "pako";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import toggleTorch from "./torch";
+// import toggleTorch from "./torch";
 import { getDeviceLocation } from "./geoLocation";
 // import { reverseGeoLocation } from "./reverseGeoLocation";
 import handleUsername from "./username";
@@ -75,18 +75,18 @@ export default function Hero() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(navigator.userAgent);
+        // console.log(navigator.userAgent);
 
-        console.log("Lat:", latitude);
-        console.log("Lon:", longitude);
-        console.log(dateTime);
+        // console.log("Lat:", latitude);
+        // console.log("Lon:", longitude);
+        // console.log(dateTime);
         // console.log(userLocation);
         // console.log(dateTime);
-        const API_URL = `http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json&barcode="${barcodeValue}"`;
-        console.log(barcodeValue);
+        const API_URL = `http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
+        // console.log(barcodeValue);
         const response = await axios.get(API_URL);
         const textData = response;
-        console.log("textData: ", textData);
+        // console.log("textData: ", textData);
         // setApiData(textData);
         setBarcodeValue("");
       } catch (error) {
@@ -139,7 +139,7 @@ export default function Hero() {
   return (
     <section className="flex flex-col justify-center items-center">
       <div>
-        <h1 className="text-center text-2xl font-bold m-2">Food Scan Genius</h1>
+        <h1 className="text-center text-xl font-semibold w-[80%] m-2">Food Scan Genius</h1>
         <h4>
           <Greeting />
         </h4>
