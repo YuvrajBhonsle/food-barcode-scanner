@@ -1,76 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>FoodScanGenius</title>
-</head>
-<body>
-  <h1>FoodScanGenius</h1>
-  <p>Welcome! Select a barcode from the list or enter it manually:</p>
-  <select id="barcodeSelect" onchange="checkBarcodeInput(this)">
-    <option value="">Select Barcode</option>
-  </select>
-  <input type="text" id="manualBarcodeInput" placeholder="Enter Barcode" oninput="checkBarcodeInput(this)">
-  <button onclick="getBarcodeDetails()">Analyze</button>
+To format the output as provided by the API endpoint response, you can modify the `displayResults()` function as follows:
 
-  <div id="status"></div>
-  <div id="result"></div>
-  <div id="navigation">
-    <a href="aboutus.html">About Us</a>
-    <a href="faq.html">FAQ</a>
-    <a href="fsg.html">Why FoodScanGenius</a>
-    <a href="foodchoice.html">Food Choices</a>  
-  </div>
+```javascript
+function displayResults(response) {
+  var resultContainer = document.getElementById("result");
+  resultContainer.innerHTML = ""; // Clear previous results
 
-  <script>
-    var barcodeInput = null;
-    var barcodeOptions = [];
+  if (response.status === 1) {
+    var products = response.products;
+    var resultHTML = "";
 
-    // Load barcode options from the JSON file
-    fetch('barcodes.json')
-      .then(response => response.json())
-      .then(data => {
-        barcodeOptions = data.barcodes;
-        populateBarcodeOptions();
-      })
-      .catch(error => {
-        console.error('Error loading barcode options:', error);
-        showStatusMessage('Error loading barcode options. Please try again later.', true);
-      });
+    for (var i = 0; i < products.length; i++) {
+      var product = products[i];
+      var productName = product.product_name;
+      var ingredients = product.ingredients_text;
+      var nutritionFacts = product.nutrition_facts;
 
-    function populateBarcodeOptions() {
-      var barcodeSelect = document.getElementById("barcodeSelect");
-      barcodeOptions.forEach(function(barcode) {
-        var option = document.createElement("option");
-        option.value = barcode;
-        option.text = barcode;
-        barcodeSelect.appendChild(option);
-      });
-    }
+      resultHTML += "<h2 class='product-name'>Product: " + productName + "</h2>";
+      resultHTML += "<h3>Ingredients:</h3>";
+      resultHTML += "<p>" + ingredients + "</p>";
+      resultHTML += "<h3>Nutrition Facts:</h3>";
+      resultHTML += "<ul>";
 
-    function checkBarcodeInput(inputElement) {
-      barcodeInput = inputElement.value;
-    }
-
-    function getBarcodeDetails() {
-      if (barcodeInput && barcodeInput.length > 0) {
-        // Show loading status
-        showStatusMessage('Loading barcode details...', false);
-
-        // Make API request and process the barcode details
-        // ...
-
-        console.log("Barcode selected: " + barcodeInput);
-      } else {
-        showStatusMessage('Please select or enter a valid barcode.', true);
-        console.log("No barcode selected.");
+      for (var j = 0; j < nutritionFacts.length; j++) {
+        var fact = nutritionFacts[j];
+        resultHTML += "<li><strong>" + fact.name + ":</strong> " + fact.value + "</li>";
       }
+
+      resultHTML += "</ul>";
     }
 
-    function showStatusMessage(message, isError) {
-      var statusContainer = document.getElementById("status");
-      statusContainer.textContent = message;
-      statusContainer.style.color = isError ? "red" : "green";
-    }
-  </script>
-</body>
-</html>
+    resultContainer.innerHTML = resultHTML;
+  } else {
+    displayError("Error: Unable to retrieve barcode information.");
+  }
+}
+```
+
+This updated function iterates over the `products` array in the response and formats the product details, including the product name, ingredients, and nutrition facts, using the provided structure. Each product is appended to the `resultHTML` string, which is then assigned to the `resultContainer.innerHTML` to display the formatted results on the page.
+
+Make sure to replace the existing `displayResults()` function with this updated version in your code.
