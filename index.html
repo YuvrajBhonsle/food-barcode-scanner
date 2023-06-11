@@ -12,6 +12,7 @@
   <input type="text" id="manualBarcodeInput" placeholder="Enter Barcode" oninput="checkBarcodeInput(this)">
   <button onclick="getBarcodeDetails()">Analyze</button>
 
+  <div id="status"></div>
   <div id="result"></div>
   <div id="navigation">
     <a href="aboutus.html">About Us</a>
@@ -31,7 +32,10 @@
         barcodeOptions = data.barcodes;
         populateBarcodeOptions();
       })
-      .catch(error => console.error('Error loading barcode options:', error));
+      .catch(error => {
+        console.error('Error loading barcode options:', error);
+        showStatusMessage('Error loading barcode options. Please try again later.', true);
+      });
 
     function populateBarcodeOptions() {
       var barcodeSelect = document.getElementById("barcodeSelect");
@@ -47,8 +51,26 @@
       barcodeInput = inputElement.value;
     }
 
-    // Rest of the code...
-    // (getBarcodeDetails, displayResults, displayError, etc.)
+    function getBarcodeDetails() {
+      if (barcodeInput && barcodeInput.length > 0) {
+        // Show loading status
+        showStatusMessage('Loading barcode details...', false);
+
+        // Make API request and process the barcode details
+        // ...
+
+        console.log("Barcode selected: " + barcodeInput);
+      } else {
+        showStatusMessage('Please select or enter a valid barcode.', true);
+        console.log("No barcode selected.");
+      }
+    }
+
+    function showStatusMessage(message, isError) {
+      var statusContainer = document.getElementById("status");
+      statusContainer.textContent = message;
+      statusContainer.style.color = isError ? "red" : "green";
+    }
   </script>
 </body>
 </html>
