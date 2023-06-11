@@ -1,41 +1,78 @@
-To format the output as provided by the API endpoint response, you can modify the `displayResults()` function as follows:
-
-```javascript
-function displayResults(response) {
-  var resultContainer = document.getElementById("result");
-  resultContainer.innerHTML = ""; // Clear previous results
-
-  if (response.status === 1) {
-    var products = response.products;
-    var resultHTML = "";
-
-    for (var i = 0; i < products.length; i++) {
-      var product = products[i];
-      var productName = product.product_name;
-      var ingredients = product.ingredients_text;
-      var nutritionFacts = product.nutrition_facts;
-
-      resultHTML += "<h2 class='product-name'>Product: " + productName + "</h2>";
-      resultHTML += "<h3>Ingredients:</h3>";
-      resultHTML += "<p>" + ingredients + "</p>";
-      resultHTML += "<h3>Nutrition Facts:</h3>";
-      resultHTML += "<ul>";
-
-      for (var j = 0; j < nutritionFacts.length; j++) {
-        var fact = nutritionFacts[j];
-        resultHTML += "<li><strong>" + fact.name + ":</strong> " + fact.value + "</li>";
-      }
-
-      resultHTML += "</ul>";
-    }
-
-    resultContainer.innerHTML = resultHTML;
-  } else {
-    displayError("Error: Unable to retrieve barcode information.");
-  }
-}
-```
-
-This updated function iterates over the `products` array in the response and formats the product details, including the product name, ingredients, and nutrition facts, using the provided structure. Each product is appended to the `resultHTML` string, which is then assigned to the `resultContainer.innerHTML` to display the formatted results on the page.
-
-Make sure to replace the existing `displayResults()` function with this updated version in your code.
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Barcode Lookup</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>Barcode Lookup</h1>
+  
+  <form id="barcodeForm">
+    <label for="barcodeInput">Enter Barcode:</label>
+    <input type="text" id="barcodeInput" name="barcode" placeholder="Barcode number">
+    <br>
+    <label for="barcodeSelect">Select Barcode from JSON file:</label>
+    <select id="barcodeSelect" name="selectedBarcode">
+    </select>
+    <br>
+    <input type="submit" value="Lookup">
+  </form>
+  
+  <hr>
+  
+  <h2>JSON Response:</h2>
+  <pre id="jsonResponse"></pre>
+  
+  <h2>CSV Data:</h2>
+  <pre id="csvData"></pre>
+  
+  <script>
+    $(document).ready(function() {
+      // Load barcodes from JSON file
+      $.getJSON('barcodes.json', function(data) {
+        var select = $('#barcodeSelect');
+        $.each(data.barcodes, function(key, value) {
+          select.append('<option value="' + value + '">' + value + '</option>');
+        });
+      });
+      
+      // Handle form submission
+      $('#barcodeForm').submit(function(event) {
+        event.preventDefault();
+        
+        // Clear previous results
+        $('#jsonResponse').empty();
+        $('#csvData').empty();
+        
+        // Get barcode value from input or select
+        var barcode = $('#barcodeInput').val() || $('#barcodeSelect').val();
+        
+        // Make API request
+        $.ajax({
+          url: 'http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode',
+          method: 'POST',
+          data: JSON.stringify({ barcode: barcode }),
+          contentType: 'application/json',
+          success: function(response) {
+            // Display JSON response
+            $('#jsonResponse').text(JSON.stringify(response, null, 2));
+            
+            // Extract CSV data from response
+            var csvData = response.csv_data;
+            if (csvData) {
+              // Display CSV data
+              $('#csvData').text(csvData);
+            } else {
+              $('#csvData').text('No CSV data found.');
+            }
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            // Display error message
+            $('#jsonResponse').text('Error: ' + textStatus + ' - ' + errorThrown);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
