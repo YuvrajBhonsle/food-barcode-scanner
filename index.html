@@ -8,7 +8,6 @@
 </head>
 <body>
   <center>
-    <!-- Remove the barcode dropdown box -->
     <h1>FoodScanGenius</h1>
     <p>Welcome! Select a barcode scanning method:</p>
     <button onclick="scanBarcode()">Scan Barcode</button>
@@ -21,6 +20,7 @@
   
   <!-- Rest of the HTML code remains unchanged -->
   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
   <script>
     // Function to populate the barcode dropdown box from barcodes.json
     function populateBarcodeDropdown() {
@@ -46,10 +46,37 @@
     // Call the function to populate the barcode dropdown on page load
     window.onload = populateBarcodeDropdown;
 
-    // Function to handle scanning barcode with the camera
+    // Function to handle scanning barcode with the camera using QuaggaJS
     function scanBarcode() {
-      var barcodeScanner = document.getElementById("barcodeScanner");
-      barcodeScanner.click();
+      Quagga.init({
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: document.querySelector('#scanner-container'),
+          constraints: {
+            width: { min: 640 },
+            height: { min: 480 },
+            facingMode: "environment" // Use rear camera for scanning
+          }
+        },
+        decoder: {
+          readers: ["ean_reader"] // Use EAN reader for barcode scanning
+        }
+      }, function(err) {
+        if (err) {
+          console.error("Failed to initialize Quagga:", err);
+          displayError();
+          return;
+        }
+        Quagga.start();
+      });
+
+      Quagga.onDetected(function(result) {
+        var barcode = result.codeResult.code;
+        Quagga.stop();
+
+        getBarcodeDetails(barcode);
+      });
     }
 
     // Function to handle manual barcode entry
@@ -82,7 +109,17 @@
       barcodeSelect.value = "";
     }
 
-    // Function to handle barcode analysis
+    // Function to display barcode details
+    function displayResults(response) {
+      // Same as before
+    }
+
+    // Function to display error message
+    function displayError() {
+      // Same as before
+    }
+
+    // Function to get barcode details
     function getBarcodeDetails(barcode) {
       if (barcode) {
         var apiURL = "https://world.openfoodfacts.org/api/v0/product/" + barcode + ".json";
@@ -92,7 +129,6 @@
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4 && xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
-
             displayResults(response);
           } else {
             displayError();
@@ -106,12 +142,7 @@
       }
     }
 
-    // Rest of the functions remain unchanged
-    // ...
-
+    // Rest of the code remains unchanged
   </script>
-  
-  <input type="file" id="barcodeScanner" accept="image/*" style="display:none" onchange="handleBarcodeScan(event)">
-  <input type="text" id="manualBarcodeEntry" placeholder="Enter barcode" style="display:none">
 </body>
 </html>
