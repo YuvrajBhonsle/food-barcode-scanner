@@ -148,7 +148,7 @@
     <option value="036632014009">036632014009</option>
     <option value="068274934711">068274934711</option>
     <option value="050000111879">050000111879</option>
-  </select> 
+  </select>
   
   <button onclick="getBarcodeDetails()">Analyze</button>
   <br>
@@ -184,7 +184,7 @@
             displayResults(response);
           } else {
             // Display error message if the request fails
-            displayError("Error: " + xhr.responseText);
+            displayError();
           }
         };
         xhr.send(JSON.stringify({ number: selectedBarcodes }));
@@ -192,7 +192,7 @@
         document.getElementById("downloadButton").disabled = false;
       } else {
         // Display error message if no barcode is selected
-        displayError("Error: " + xhr.responseText);
+        displayError();
       }
     }
 
@@ -220,15 +220,14 @@
 
         resultContainer.innerHTML = resultHTML;
       } else {
-        displayError("Error: " + xhr.responseText);
+        displayError();
       }
     }
 
-    function displayError(message) {
-    var resultContainer = document.getElementById("result");
-    var displayMessage = message || "Error: Unable to retrieve barcode information.";
-    resultContainer.innerHTML = "<p class='error'>" + displayMessage + "</p>";
-  }
+    function displayError() {
+      var resultContainer = document.getElementById("result");
+      resultContainer.innerHTML = "<p class='error'>Error: Unable to retrieve barcode information.</p>";
+    }
     
     function getLocation() {
       if (navigator.geolocation) {
@@ -252,32 +251,13 @@
         var locationContainer = document.getElementById("location");
         locationContainer.innerHTML = "Unable to retrieve location information.";
     }
-
-function downloadReport() {
-  var downloadLinkZip = document.createElement('a');
-  downloadLinkZip.href = 'http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=zip';
-  downloadLinkZip.download = 'Analysis_Report.zip';
-  document.body.appendChild(downloadLinkZip);
-  downloadLinkZip.click();
-
-  // Wait 1 second (1000 milliseconds) before downloading the JSON file
-  setTimeout(function() {
-    var downloadLinkJson = document.createElement('a');
-    downloadLinkJson.href = 'http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json';
-    downloadLinkJson.download = 'Analysis_Report.json';
-    document.body.appendChild(downloadLinkJson);
-    downloadLinkJson.click();
-    
-    // Remove the elements from the DOM after triggering the downloads
-    document.body.removeChild(downloadLinkJson);
-  }, 1000);
-
-  // Remove the first download link immediately after triggering the download
-  document.body.removeChild(downloadLinkZip);
-}
-
-
-
-  </script>
+        
+    function downloadReport() {
+      var link = document.createElement('a');
+      link.href = 'http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode';
+      link.download = 'Analysis_Report.csv';
+      link.click();
+    }
+    </script>
 </body>
 </html>
