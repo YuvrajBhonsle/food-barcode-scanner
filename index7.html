@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FoodScanGenius June 12:1716</title>
+  <style>
+    /* CSS styles remain unchanged */
+  </style>
+</head>
+<body>
+  <center>
+    <h1>FoodScanGenius</h1>
+    <p>Welcome! Select a barcode scanning method:</p>
+    <button onclick="scanBarcode()">Scan Barcode</button>
+    <button onclick="manualBarcodeEntry()">Enter Barcode Manually</button>
+    <select id="barcodeSelect" onchange="selectBarcode()">
+      <option value="">Select Barcode</option>
+    </select>
+    <button onclick="getBarcodeDetailsFromDropdown()">Analyze</button>
+  </center>
+  
+  <!-- Rest of the HTML code remains unchanged -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+  <script>
+    // Function to populate the barcode dropdown box from barcodes.json
+    function populateBarcodeDropdown() {
+      var barcodeSelect = document.getElementById("barcodeSelect");
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "barcodes.json", true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var barcodes = JSON.parse(xhr.responseText);
+          for (var i = 0; i < barcodes.length; i++) {
+            var option = document.createElement("option");
+            option.value = barcodes[i];
+            option.textContent = barcodes[i];
+            barcodeSelect.appendChild(option);
+          }
+        } else {
+          displayError();
+        }
+      };
+      xhr.send();
+    }
+    
+    // Call the function to populate the barcode dropdown on page load
+    window.onload = populateBarcodeDropdown;
+
+    // Function to handle scanning barcode with the camera using QuaggaJS
+    function scanBarcode() {
+      Quagga.init({
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: document.querySelector('#scanner-container'),
+          constraints: {
+            width: { min: 640 },
+            height: { min: 480 },
+            facingMode: "environment" // Use rear camera for scanning
+          }
+        },
+        decoder: {
+          readers: ["ean_reader"] // Use EAN reader for barcode scanning
+        }
+      }, function(err) {
+        if (err) {
+          console.error("Failed to initialize Quagga:", err);
+          displayError();
+          return;
+        }
+        Quagga.start();
+      });
+
+      Quagga.onDetected(function(result) {
+        var barcode = result.codeResult.code;
+        Quagga.stop();
+
+        getBarcodeDetails(barcode);
+      });
+    }
+
+    // Function to handle manual barcode entry
+    function manualBarcodeEntry() {
+      var manualBarcodeEntry = document.getElementById("manualBarcodeEntry");
+      var barcode = manualBarcodeEntry.value.trim();
+
+      getBarcodeDetails(barcode);
+
+      manualBarcodeEntry.value = "";
+    }
+
+    // Function to handle barcode selection from the dropdown box
+    function selectBarcode() {
+      var barcodeSelect = document.getElementById("barcodeSelect");
+      var barcode = barcodeSelect.value.trim();
+
+      getBarcodeDetails(barcode);
+
+      barcodeSelect.value = "";
+    }
+
+    // Function to handle barcode analysis from the dropdown box
+    function getBarcodeDetailsFromDropdown() {
+      var barcodeSelect = document.getElementById("barcodeSelect");
+      var barcode = barcodeSelect.value.trim();
+
+      getBarcodeDetails(barcode);
+
+      barcodeSelect.value = "";
+    }
+
+    // Function to display barcode details
+    function displayResults(response) {
+      // Same as before
+    }
+
+    // Function to display error message
+    function displayError() {
+      // Same as before
+    }
+
+    // Function to get barcode details
+    function getBarcodeDetails(barcode) {
+      if (barcode) {
+        var apiURL = "https://world.openfoodfacts.org/api/v0/product/" + barcode + ".json";
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", apiURL, true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            displayResults(response);
+          } else {
+            displayError();
+          }
+        };
+        xhr.send();
+
+        getLocation();
+      } else {
+        displayError();
+      }
+    }
+
+    // Rest of the code remains unchanged
+  </script>
+</body>
+</html>
