@@ -82,7 +82,7 @@ export default function Hero() {
         // console.log(dateTime);
         // console.log(userLocation);
         // console.log(dateTime);
-        const API_URL = `http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json&barcode="${barcodeValue}"`;
+        const API_URL = `http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json&barcode="${barcodeValue}"/`;
         // const API_URL = `https://apiexample${barcodeValue}.com`;
         const response = await axios.get(API_URL);
         if (response.status === 200) {
