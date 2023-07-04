@@ -8,12 +8,14 @@ import { getDeviceLocation } from "./geoLocation";
 // import { reverseGeoLocation } from "./reverseGeoLocation";
 import handleUsername from "./username";
 import Greeting from "./Greeting";
+import ProductInfo from "./ProductInfo";
 
 export default function Hero() {
   // const [data, setData] = useState("Not Found");
   const [barcodeValue, setBarcodeValue] = useState("");
-  const [apiData, setApiData] = useState("");
+
   const [startScan, setStartScan] = useState(false);
+  const [apiData, setApiData] = useState(null);
   const [dateTime, setDateTime] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
@@ -75,23 +77,33 @@ export default function Hero() {
     const fetchData = async () => {
       try {
         // console.log(navigator.userAgent);
-
         // console.log("Lat:", latitude);
         // console.log("Lon:", longitude);
         // console.log(dateTime);
         // console.log(userLocation);
         // console.log(dateTime);
         const API_URL = `http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json&barcode="${barcodeValue}"`;
+        // const API_URL = `https://apiexample${barcodeValue}.com`;
         const response = await axios.get(API_URL);
-        if(response.status === 200){
+        if (response.status === 200) {
+          // const jsonData = await response.json();
+          // const data = jsonData[0].data;
           const textData = response.data;
-          console.log("textData: ", textData);
-          console.log(barcodeValue);
-          console.log("Prev Barcode: ", prevBarcodeValueRef);
-          setApiData(textData[0].data.barcode);
-          // setApiData(textData);
-          // setBarcodeValue("");
+          const tableData = textData[0].data;
+          // console.log("textData: ", textData);
+          // console.log("tableData: ", tableData);
+          // console.log(barcodeValue);
+          // console.log("Prev Barcode: ", prevBarcodeValueRef);
+          setApiData(tableData);
+          // console.log(apiData);
           setStartScan(false);
+          // setApiData(textData[0].data.barcode);
+          // console.log(typeof Object.entries(response.data[0].data))
+          // Object.entries(response.data[0].data).map((item, index) => {
+          //   console.log(item[0], item[1]);
+          // })
+          // setBarcodeValue("");
+          // setApiData(data);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -105,7 +117,7 @@ export default function Hero() {
           progress: undefined,
           theme: "light",
         });
-      } finally{
+      } finally {
         setBarcodeValue("");
         setStartScan(true);
       }
@@ -114,7 +126,7 @@ export default function Hero() {
     if (barcodeValue && barcodeValue !== prevBarcodeValueRef.current) {
       prevBarcodeValueRef.current = barcodeValue;
       fetchData();
-      setApiData("");
+      setApiData(null);
     }
   }, [barcodeValue]);
 
@@ -153,14 +165,22 @@ export default function Hero() {
           <Greeting />
         </h4>
       </div>
-      <div className="barcode-scanner m-3">
+      <div className="barcode-scanner m-3 relative">
+        <div
+          className={`scanner-effect absolute top-0 left-0 right-0 bottom-0 border-2 border-green-500 ${
+            barcodeValue ? "border-none" : "animate-[scannerAnimation_5s_linear_infinite]"
+          } pointer-events-none`}
+        />
         <video ref={videoRef} className="video rounded-lg" />
       </div>
-      <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
-        Barcode Value: {barcodeValue}
-      </p>
-      <h1 className="scanned-data text-lg my-3 mx-auto font-bold w-[50%] md:[50%] text-center">
-      API data: {apiData}</h1>
+
+      {apiData && startScan ? (
+        <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
+          Barcode Value: {barcodeValue}
+        </p>
+      ) : (
+        <h1 className="text-center text-lg font-bold">Scanning...</h1>
+      )}
       <div className="flex flex-col justify-center items-center w-1/2 md:flex-row mb-3">
         {/* <button
           className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
@@ -201,6 +221,9 @@ export default function Hero() {
       )}
         </section> */}
         <ToastContainer position="bottom-center" theme="light" />
+      </div>
+      <div className="container mx-4 mb-4">
+        {apiData && <ProductInfo apiData={apiData} itemsPerPage={5} />}
       </div>
     </section>
   );
