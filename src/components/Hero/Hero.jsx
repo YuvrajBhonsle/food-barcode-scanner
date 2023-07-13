@@ -208,7 +208,7 @@ export default function Hero() {
 
       {apiData && startScan ? (
         <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
-          Barcode Value: {apiData?.barcode}
+          Barcode Value: {apiData?.barcode === "" ? "No result found" : apiData?.barcode}
         </p>
       ) : (
         <h1 className="text-center text-lg font-bold">Scanning...</h1>
