@@ -108,30 +108,49 @@ import React, { useState } from "react";
 // };
 
 const ProductInfo = ({ apiData, itemsPerPage }) => {
-  const responseObj = JSON.parse(apiData?.response);
-  const totalPages = Math.ceil(Object.keys(responseObj).length / itemsPerPage);
-
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handlePageChange = (page) => {
+  const totalPages = Math.ceil(Object.keys(apiData).length / itemsPerPage);
+  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  const getPageNumbersToShow = () => {
+    if (totalPages <= 5) {
+      return pageNumbers;
+    }
+
+    const firstPageNumbers = pageNumbers.slice(0, 3);
+    const lastPageNumber = pageNumbers[totalPages - 1];
+
+    if (currentPage <= 3) {
+      return [...firstPageNumbers, "...", lastPageNumber];
+    }
+
+    if (currentPage >= totalPages - 2) {
+      return [1, "...", ...pageNumbers.slice(totalPages - 3)];
+    }
+
+    return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", lastPageNumber];
+  };
+
+  const goToPage = (page) => {
     setCurrentPage(page);
   };
 
   const goToPreviousPage = () => {
     if (currentPage > 1) {
-      setCurrentPage((prevPage) => prevPage - 1);
+      setCurrentPage(currentPage - 1);
     }
   };
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage((prevPage) => prevPage + 1);
+      setCurrentPage(currentPage + 1);
     }
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const slicedData = Object.entries(responseObj).slice(startIndex, endIndex);
+  const slicedData = Object.entries(apiData).slice(startIndex, endIndex);
 
   return (
     <div className="overflow-x-auto mx-4 sm:mx-6">
@@ -163,18 +182,23 @@ const ProductInfo = ({ apiData, itemsPerPage }) => {
           onClick={goToPreviousPage}
           disabled={currentPage <= 1}
         >
-          Previous
+          Prev
         </button>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            className={`px-2 sm:px-4 py-1 sm:py-2 mx-1 ${
-              currentPage === index + 1 ? "bg-gray-700 text-white" : "bg-gray-300"
-            } rounded`}
-            onClick={() => handlePageChange(index + 1)}
-          >
-            {index + 1}
-          </button>
+        {getPageNumbersToShow().map((pageNumber, index) => (
+          <React.Fragment key={index}>
+            {pageNumber === "..." ? (
+              <span className="mx-1 flex items-center justify-center">...</span>
+            ) : (
+              <button
+                className={`px-2 sm:px-4 py-1 sm:py-2 mx-1 ${
+                  pageNumber === currentPage ? "bg-gray-700 text-white" : "bg-gray-300"
+                } rounded`}
+                onClick={() => goToPage(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            )}
+          </React.Fragment>
         ))}
         <button
           className={`px-2 sm:px-4 py-1 sm:py-2 mx-1 ${
@@ -189,5 +213,6 @@ const ProductInfo = ({ apiData, itemsPerPage }) => {
     </div>
   );
 };
+
 
 export default ProductInfo;
