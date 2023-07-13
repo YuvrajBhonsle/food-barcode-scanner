@@ -78,7 +78,7 @@ export default function Hero() {
 
   useEffect(() => {
     const postData = async () => {
-      console.log("Inside post")
+      // console.log("Inside post")
       const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
       const postResponse = await axios.post(
         POST_URL,
@@ -100,8 +100,8 @@ export default function Hero() {
 
     const fetchData = async () => {
       try {
-        console.log("Inside fetch")
-        console.log("Fetch" + barcodeValue)
+        // console.log("Inside fetch")
+        // console.log("Fetch" + barcodeValue)
         const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
         const response = await axios.get(API_URL);
         if (response.status === 200 && response.data.response !== "") {
