@@ -145,7 +145,7 @@ export default function Hero() {
           setBarcodeValue("");
           // postData();
         }
-        setBarcodeValue("");
+        // setBarcodeValue("");
         setStartScan(true);
         // if(apiData === null){
         //   setStartScan(true);
@@ -154,7 +154,7 @@ export default function Hero() {
     };
 
     if (barcodeValue && barcodeValue !== prevBarcodeValueRef.current) {
-      // prevBarcodeValueRef.current = barcodeValue;
+      prevBarcodeValueRef.current = barcodeValue;
       postData();
       setApiData(null);
     }
