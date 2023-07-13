@@ -25,6 +25,9 @@ export default function Hero() {
   const videoRef = useRef(null);
   const codeReaderRef = useRef(null);
   const prevBarcodeValueRef = useRef("");
+  const fetchDataRef = useRef(false);
+  const maxRetries = 3;
+  const retriesRef = useRef(0);
 
   useEffect(() => {
     handleUsername();
@@ -74,36 +77,55 @@ export default function Hero() {
   };
 
   useEffect(() => {
+    const postData = async () => {
+      console.log("Inside post")
+      const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
+      const postResponse = await axios.post(
+        POST_URL,
+        {
+          data: {
+            number: barcodeValue,
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+        );
+      console.log(postResponse);
+      console.log("Post" + barcodeValue)
+      setTimeout(await fetchData(), 3000);
+    };
+
     const fetchData = async () => {
       try {
-        // console.log(navigator.userAgent);
-        // console.log("Lat:", latitude);
-        // console.log("Lon:", longitude);
-        // console.log(dateTime);
-        // console.log(userLocation);
-        // console.log(dateTime);
-        const API_URL = `http://ec2-13-49-238-207.eu-north-1.compute.amazonaws.com:9090/barcode/v1/barcode?type=json&barcode="${barcodeValue}"`;
-        // const API_URL = `http://apiexample${barcodeValue}.com`;
+        console.log("Inside fetch")
+        console.log("Fetch" + barcodeValue)
+        const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
         const response = await axios.get(API_URL);
-        if (response.status === 200) {
-          // const jsonData = await response.json();
-          // const data = jsonData[0].data;
-          const textData = response.data;
-          const tableData = textData[0].data;
-          // console.log("textData: ", textData);
-          // console.log("tableData: ", tableData);
-          // console.log(barcodeValue);
-          // console.log("Prev Barcode: ", prevBarcodeValueRef);
-          setApiData(tableData);
-          // console.log(apiData);
+        if (response.status === 200 && response.data.response !== "") {
+          setApiData(response?.data);
           setStartScan(false);
-          // setApiData(textData[0].data.barcode);
-          // console.log(typeof Object.entries(response.data[0].data))
-          // Object.entries(response.data[0].data).map((item, index) => {
-          //   console.log(item[0], item[1]);
-          // })
-          // setBarcodeValue("");
-          // setApiData(data);
+          console.log(response);
+        } else {
+          if (
+            retriesRef.current <= maxRetries &&
+            response.data.response === ""
+          ) {
+            await fetchData();
+            toast.info(`Trying to fetch data ${retriesRef.current}`, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              });
+            retriesRef.current++;
+          }
         }
       } catch (error) {
         console.error("Error:", error);
@@ -118,14 +140,22 @@ export default function Hero() {
           theme: "light",
         });
       } finally {
+        if (retriesRef.current >= maxRetries) {
+          retriesRef.current = 0;
+          setBarcodeValue("");
+          // postData();
+        }
         setBarcodeValue("");
         setStartScan(true);
+        // if(apiData === null){
+        //   setStartScan(true);
+        // }
       }
     };
 
     if (barcodeValue && barcodeValue !== prevBarcodeValueRef.current) {
-      prevBarcodeValueRef.current = barcodeValue;
-      fetchData();
+      // prevBarcodeValueRef.current = barcodeValue;
+      postData();
       setApiData(null);
     }
   }, [barcodeValue]);
@@ -168,7 +198,9 @@ export default function Hero() {
       <div className="barcode-scanner m-3 relative">
         <div
           className={`scanner-effect absolute top-0 left-0 right-0 bottom-0 border-2 border-green-500 ${
-            barcodeValue ? "border-none" : "animate-[scannerAnimation_5s_linear_infinite]"
+            barcodeValue
+              ? "border-0 border-none animate-none"
+              : "animate-[scannerAnimation_5s_linear_infinite]"
           } pointer-events-none`}
         />
         <video ref={videoRef} className="video rounded-lg" />
@@ -176,7 +208,7 @@ export default function Hero() {
 
       {apiData && startScan ? (
         <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
-          Barcode Value: {barcodeValue}
+          Barcode Value: {apiData?.barcode}
         </p>
       ) : (
         <h1 className="text-center text-lg font-bold">Scanning...</h1>
@@ -223,7 +255,8 @@ export default function Hero() {
         <ToastContainer position="bottom-center" theme="light" />
       </div>
       <div className="container mx-4 mb-4">
-        {apiData && <ProductInfo apiData={apiData} itemsPerPage={5} />}
+        {/* {apiData?.response} */}
+        {apiData?.response && <ProductInfo apiData={apiData} itemsPerPage={5} />}
       </div>
     </section>
   );
