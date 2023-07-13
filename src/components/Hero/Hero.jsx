@@ -94,7 +94,7 @@ export default function Hero() {
         }
         );
       console.log(postResponse);
-      console.log("Post" + barcodeValue)
+      // console.log("Post" + barcodeValue)
       setTimeout(await fetchData(), 3000);
     };
 
