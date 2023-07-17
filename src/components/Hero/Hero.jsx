@@ -77,88 +77,92 @@ export default function Hero() {
   };
 
   useEffect(() => {
-    const postData = async () => {
-      // console.log("Inside post")
-      const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
-      const postResponse = await axios.post(
-        POST_URL,
-        {
-          data: {
-            number: barcodeValue,
-          },
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-        );
-      console.log(postResponse);
-      // console.log("Post" + barcodeValue)
-      setTimeout(await fetchData(), 3000);
-    };
-
-    const fetchData = async () => {
-      try {
-        // console.log("Inside fetch")
-        // console.log("Fetch" + barcodeValue)
-        const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
-        const response = await axios.get(API_URL);
-        if (response.status === 200 && response.data.response !== "") {
-          setApiData(response?.data);
-          setStartScan(false);
-          console.log(response);
-        } else {
-          if (
-            retriesRef.current <= maxRetries &&
-            response.data.response === ""
-          ) {
-            await fetchData();
-            toast.info(`Trying to fetch data ${retriesRef.current}`, {
-              position: "bottom-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              });
-            retriesRef.current++;
-          }
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        toast.error("Error fetching the data", {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      } finally {
-        if (retriesRef.current >= maxRetries) {
-          retriesRef.current = 0;
-          setBarcodeValue("");
-          // postData();
-        }
-        // setBarcodeValue("");
-        setStartScan(true);
-        // if(apiData === null){
-        //   setStartScan(true);
-        // }
-      }
-    };
-
     if (barcodeValue && barcodeValue !== prevBarcodeValueRef.current) {
       prevBarcodeValueRef.current = barcodeValue;
       postData();
+      setStartScan(false);
       setApiData(null);
     }
   }, [barcodeValue]);
+
+  const postData = async () => {
+    // console.log("Inside post")
+    const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
+    try {
+      const postResponse = await axios.post(POST_URL, {
+        data: {
+          "number": barcodeValue,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(postResponse);
+
+      setTimeout(() => {
+        fetchData();
+      }, 3000);
+    } catch (error) {
+      console.error("Error in POST request: ", error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      // console.log("Inside fetch")
+      // console.log("Fetch" + barcodeValue)
+      const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
+      const response = await axios.get(API_URL);
+      if (response.status === 200 && response.data.response !== "") {
+        setApiData(response?.data);
+        setStartScan(false);
+        console.log(response);
+        retriesRef.current = 0;
+        // console.log(response.data.data.response);
+      } else {
+        if (
+          retriesRef.current <= maxRetries &&
+          response.data.response === ""
+        ) {
+          toast.info(`Trying to fetch data ${retriesRef.current}`, {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          retriesRef.current++;
+          await fetchData();
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Error fetching the data", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } finally {
+      if (retriesRef.current >= maxRetries) {
+        retriesRef.current = 0;
+        setBarcodeValue("");
+        // postData();
+      }
+      // setBarcodeValue("");
+      setStartScan(true);
+      // if(apiData === null){
+      //   setStartScan(true);
+      // }
+    }
+  };
 
   // const handleScanButtonClick = () => {
   //   setStartScan(true);
@@ -203,15 +207,17 @@ export default function Hero() {
               : "animate-[scannerAnimation_5s_linear_infinite]"
           } pointer-events-none`}
         />
-        <video ref={videoRef} className="video rounded-lg" />
+        {videoRef && startScan ? <video ref={videoRef} className="video rounded-lg" ></video> : <img src="/logo.jpg"/>}
       </div>
 
       {apiData && startScan ? (
         <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
-          Barcode Value: {apiData?.barcode === "" ? "No result found" : apiData?.barcode}
+          {apiData?.data?.barcode === "" ? `No result found for ${barcodeValue}` : `Barcode Value: ${apiData?.data?.barcode}`}
         </p>
-      ) : (
-        <h1 className="text-center text-lg font-bold">Scanning...</h1>
+      ) : (<>
+        {startScan && <h1 className="text-center text-lg font-bold">Scanning...</h1>}
+        <h1 className="text-center text-lg font-bold">Detected Barcode value: {barcodeValue ? barcodeValue : "-"}</h1>
+        </>
       )}
       <div className="flex flex-col justify-center items-center w-1/2 md:flex-row mb-3">
         {/* <button
@@ -256,7 +262,9 @@ export default function Hero() {
       </div>
       <div className="container mx-4 mb-4">
         {/* {apiData?.response} */}
-        {apiData?.response && <ProductInfo apiData={apiData} itemsPerPage={5} />}
+        {apiData?.data?.response && (
+          <ProductInfo apiData={apiData?.data?.response} itemsPerPage={5} />
+        )}
       </div>
     </section>
   );
