@@ -113,7 +113,7 @@ export default function Hero() {
       // console.log("Fetch" + barcodeValue)
       const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
       const response = await axios.get(API_URL);
-      if (response.status === 200 && response.data.response !== "") {
+      if (response.status === 200 && response?.data !== "") {
         setApiData(response?.data);
         setStartScan(false);
         console.log(response);
@@ -122,7 +122,7 @@ export default function Hero() {
       } else {
         if (
           retriesRef.current <= maxRetries &&
-          response.data.response === ""
+          response?.data === ""
         ) {
           toast.info(`Trying to fetch data ${retriesRef.current}`, {
             position: "bottom-center",
@@ -135,6 +135,7 @@ export default function Hero() {
             theme: "light",
           });
           retriesRef.current++;
+          console.log(response);
           await fetchData();
         }
       }
@@ -154,13 +155,8 @@ export default function Hero() {
       if (retriesRef.current >= maxRetries) {
         retriesRef.current = 0;
         setBarcodeValue("");
-        // postData();
       }
-      // setBarcodeValue("");
       setStartScan(true);
-      // if(apiData === null){
-      //   setStartScan(true);
-      // }
     }
   };
 
@@ -262,8 +258,8 @@ export default function Hero() {
       </div>
       <div className="container mx-4 mb-4">
         {/* {apiData?.response} */}
-        {apiData?.data?.response && (
-          <ProductInfo apiData={apiData?.data?.response} itemsPerPage={5} />
+        {apiData?.data && (
+          <ProductInfo apiData={apiData?.data} itemsPerPage={5} />
         )}
       </div>
     </section>
