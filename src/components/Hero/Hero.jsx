@@ -21,6 +21,7 @@ export default function Hero() {
   const [longitude, setLongitude] = useState("");
   const [userLocation, setUserLocation] = useState("");
   const [torchEnabled, setTorchEnabled] = useState(false);
+  const [apiStatus, setApiStatus] = useState("Scanning...");
   // const [modalOpen, setModalOpen] = useState(false);
   const videoRef = useRef(null);
   const codeReaderRef = useRef(null);
@@ -86,12 +87,12 @@ export default function Hero() {
   }, [barcodeValue]);
 
   const postData = async () => {
-    // console.log("Inside post")
+    setApiStatus("Sending POST Request");
     const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
     try {
       const postResponse = await axios.post(POST_URL, {
         data: {
-          number: barcodeValue,
+          number: [barcodeValue],
         },
         headers: {
           "Content-Type": "application/json",
@@ -104,12 +105,22 @@ export default function Hero() {
       }, 3000);
     } catch (error) {
       console.error("Error in POST request: ", error);
+      toast.error("Error in POST request", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
   const fetchData = async () => {
     try {
-      // console.log("Inside fetch")
+      setApiStatus("Sending POST Request")
       // console.log("Fetch" + barcodeValue)
       const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
       const response = await axios.get(API_URL);
@@ -217,8 +228,8 @@ export default function Hero() {
         </p>
       ) : (
         <>
-          {startScan && (
-            <h1 className="text-center text-lg font-bold">Scanning...</h1>
+          {!apiData &&  (
+            <h1 className="text-center text-lg font-bold">{apiStatus}</h1>
           )}
           <h1 className="text-center text-lg font-bold">
             Detected Barcode value: {barcodeValue ? barcodeValue : "-"}
