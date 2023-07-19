@@ -91,7 +91,7 @@ export default function Hero() {
     try {
       const postResponse = await axios.post(POST_URL, {
         data: {
-          "number": barcodeValue,
+          number: barcodeValue,
         },
         headers: {
           "Content-Type": "application/json",
@@ -114,16 +114,15 @@ export default function Hero() {
       const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
       const response = await axios.get(API_URL);
       if (response.status === 200 && response?.data !== "") {
+        console.log(response?.data);
+        // console.log(response?.data?.data);
         setApiData(response?.data);
         setStartScan(false);
-        console.log(response);
+        // console.log(response.data.response.barcode)
         retriesRef.current = 0;
         // console.log(response.data.data.response);
       } else {
-        if (
-          retriesRef.current <= maxRetries &&
-          response?.data === ""
-        ) {
+        if (retriesRef.current <= maxRetries && response?.data === "") {
           toast.info(`Trying to fetch data ${retriesRef.current}`, {
             position: "bottom-center",
             autoClose: 5000,
@@ -156,7 +155,7 @@ export default function Hero() {
         retriesRef.current = 0;
         setBarcodeValue("");
       }
-      setStartScan(true);
+      setStartScan(false);
     }
   };
 
@@ -203,19 +202,36 @@ export default function Hero() {
               : "animate-[scannerAnimation_5s_linear_infinite]"
           } pointer-events-none`}
         />
-        {videoRef && startScan ? <video ref={videoRef} className="video rounded-lg" ></video> : <img src="/logo.jpg"/>}
+        {videoRef && startScan ? (
+          <video ref={videoRef} className="video rounded-lg"></video>
+        ) : (
+          <img src="/logo.jpg" />
+        )}
       </div>
 
-      {apiData && startScan ? (
+      {apiData && !startScan ? (
         <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
-          {apiData?.data?.barcode === "" ? `No result found for ${barcodeValue}` : `Barcode Value: ${apiData?.data?.barcode}`}
+          {apiData === ""
+            ? `No result found for ${barcodeValue}`
+            : `Barcode Data for ${barcodeValue} is : ${apiData}`}
         </p>
-      ) : (<>
-        {startScan && <h1 className="text-center text-lg font-bold">Scanning...</h1>}
-        <h1 className="text-center text-lg font-bold">Detected Barcode value: {barcodeValue ? barcodeValue : "-"}</h1>
+      ) : (
+        <>
+          {startScan && (
+            <h1 className="text-center text-lg font-bold">Scanning...</h1>
+          )}
+          <h1 className="text-center text-lg font-bold">
+            Detected Barcode value: {barcodeValue ? barcodeValue : "-"}
+          </h1>
         </>
       )}
       <div className="flex flex-col justify-center items-center w-1/2 md:flex-row mb-3">
+        {!startScan && (<button className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2" onClick={
+          () =>  {
+          setBarcodeValue("");
+          setStartScan(true);
+          }
+          }>Start New Scan</button> )}
         {/* <button
           className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
           onClick={handleScanButtonClick}
