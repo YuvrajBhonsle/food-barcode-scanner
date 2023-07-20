@@ -239,7 +239,9 @@ export default function Hero() {
         {!startScan && (<button className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2" onClick={
           () =>  {
           setBarcodeValue("");
+          setApiData(null);
           setStartScan(true);
+          setApiStatus("Scanning...")
           }
           }>Start New Scan</button> )}
         {/* <button
