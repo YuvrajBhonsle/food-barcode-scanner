@@ -26,7 +26,6 @@ export default function Hero() {
   const videoRef = useRef(null);
   const codeReaderRef = useRef(null);
   const prevBarcodeValueRef = useRef("");
-  const fetchDataRef = useRef(false);
   const maxRetries = 3;
   const retriesRef = useRef(0);
 
@@ -213,7 +212,7 @@ export default function Hero() {
               : "animate-[scannerAnimation_5s_linear_infinite]"
           } pointer-events-none`}
         />
-        {videoRef && startScan ? (
+        {videoRef && startScan && !apiData ? (
           <video ref={videoRef} className="video rounded-lg"></video>
         ) : (
           <img src="/logo.jpg" />
