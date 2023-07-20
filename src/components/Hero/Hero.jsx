@@ -27,7 +27,7 @@ export default function Hero() {
   const codeReaderRef = useRef(null);
   const prevBarcodeValueRef = useRef("");
   const maxRetries = 3;
-  const retriesRef = useRef(0);
+  const retriesRef = useRef(1);
 
   useEffect(() => {
     handleUsername();
@@ -87,6 +87,7 @@ export default function Hero() {
 
   const postData = async () => {
     setApiStatus("Sending POST Request");
+    setStartScan(false);
     const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
     try {
       const postResponse = await axios.post(POST_URL, {
@@ -119,7 +120,7 @@ export default function Hero() {
 
   const fetchData = async () => {
     try {
-      setApiStatus("Sending POST Request")
+      setApiStatus("Sending GET Request");
       // console.log("Fetch" + barcodeValue)
       const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
       const response = await axios.get(API_URL);
@@ -127,9 +128,9 @@ export default function Hero() {
         console.log(response?.data);
         // console.log(response?.data?.data);
         setApiData(response?.data);
-        setStartScan(false);
+        // setStartScan(false);
         // console.log(response.data.response.barcode)
-        retriesRef.current = 0;
+        retriesRef.current = 1;
         // console.log(response.data.data.response);
       } else {
         if (retriesRef.current <= maxRetries && response?.data === "") {
@@ -146,6 +147,8 @@ export default function Hero() {
           retriesRef.current++;
           console.log(response);
           await fetchData();
+        } else{
+          setApiStatus(`No data found for ${barcodeValue}`)
         }
       }
     } catch (error) {
@@ -162,10 +165,10 @@ export default function Hero() {
       });
     } finally {
       if (retriesRef.current >= maxRetries) {
-        retriesRef.current = 0;
+        retriesRef.current = 1;
         setBarcodeValue("");
       }
-      setStartScan(false);
+      // setStartScan(false);
     }
   };
 
@@ -200,16 +203,16 @@ export default function Hero() {
     <section className="flex flex-col justify-center items-center">
       <div>
         <h1 className="text-center text-2xl font-bold m-2">Food Scan Genius</h1>
-        <h4>
+        <h4 className="text-center">
           <Greeting />
         </h4>
       </div>
       <div className="barcode-scanner m-3 relative">
         <div
           className={`scanner-effect absolute top-0 left-0 right-0 bottom-0 border-2 border-green-500 ${
-            barcodeValue
-              ? "border-0 border-none animate-none"
-              : "animate-[scannerAnimation_5s_linear_infinite]"
+            videoRef && startScan && !apiData 
+            ? "animate-[scannerAnimation_5s_linear_infinite]"
+              : "border-0 border-none animate-none"
           } pointer-events-none`}
         />
         {videoRef && startScan && !apiData ? (
@@ -227,7 +230,7 @@ export default function Hero() {
         </p>
       ) : (
         <>
-          {!apiData &&  (
+          {!apiData && (
             <h1 className="text-center text-lg font-bold">{apiStatus}</h1>
           )}
           <h1 className="text-center text-lg font-bold">
@@ -236,14 +239,19 @@ export default function Hero() {
         </>
       )}
       <div className="flex flex-col justify-center items-center w-1/2 md:flex-row mb-3">
-        {!startScan && (<button className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2" onClick={
-          () =>  {
-          setBarcodeValue("");
-          setApiData(null);
-          setStartScan(true);
-          setApiStatus("Scanning...")
-          }
-          }>Start New Scan</button> )}
+        {!startScan && (
+          <button
+            className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
+            onClick={() => {
+              setBarcodeValue("");
+              setApiData(null);
+              setStartScan(true);
+              setApiStatus("Scanning...");
+            }}
+          >
+            Start New Scan
+          </button>
+        )}
         {/* <button
           className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
           onClick={handleScanButtonClick}
