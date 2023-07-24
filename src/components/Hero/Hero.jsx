@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BrowserBarcodeReader } from "@zxing/library";
+// import { BarcodeFormat } from '@zxing/browser';
+import { BrowserBarcodeReader, BrowserMultiFormatReader } from "@zxing/library";
+// import { BrowserCodeReader, BrowserMultiFormatReader } from '@zxing/browser';  //Unstable
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import toggleTorch from "./torch";
+import toggleTorch from "./torch";
 import { getDeviceLocation } from "./geoLocation";
 // import { reverseGeoLocation } from "./reverseGeoLocation";
 import handleUsername from "./username";
@@ -11,9 +13,7 @@ import Greeting from "./Greeting";
 import ProductInfo from "./ProductInfo";
 
 export default function Hero() {
-  // const [data, setData] = useState("Not Found");
   const [barcodeValue, setBarcodeValue] = useState("");
-
   const [startScan, setStartScan] = useState(false);
   const [apiData, setApiData] = useState(null);
   const [dateTime, setDateTime] = useState("");
@@ -45,23 +45,28 @@ export default function Hero() {
     let codeReader;
 
     if (startScan) {
-      codeReader = new BrowserBarcodeReader();
+      // codeReader = new BrowserBarcodeReader();
+      codeReader = new BrowserMultiFormatReader();
       codeReaderRef.current = codeReader;
 
       try {
         const videoElement = videoRef.current;
-        codeReader.decodeFromVideoDevice(
-          undefined,
-          videoElement,
-          handleScannerUpdate
-        );
+        // codeReader.decodeFromVideoDevice(
+        //   undefined,
+        //   videoElement,
+        //   handleScannerUpdate
+        // );
+
+        // const formats = BarcodeFormat.ALL_FORMATS;
+        // codeReader.decodeFromVideoElement(undefined, videoElement, handleScannerUpdate, formats);
+        codeReader.decodeFromVideoDevice(undefined, videoElement, handleScannerUpdate);
       } catch (err) {
         console.error(err);
       }
     }
 
     return () => {
-      if (codeReader) {
+      if (codeReader && typeof codeReader.reset === 'function') {
         codeReader.reset();
       }
     };
@@ -172,6 +177,17 @@ export default function Hero() {
     }
   };
 
+  const getCurrentTimeStamp = () => {
+    const timeStamp = Date.now();
+    const dateObj = new Date(timeStamp);
+
+    const date = dateObj.toLocaleDateString();
+    const time = dateObj.toLocaleTimeString();
+
+    setDateTime(date + " " + time);
+    // return date + " " + time;
+  };
+
   // const handleScanButtonClick = () => {
   //   setStartScan(true);
   //   getDeviceLocation(setLatitude, setLongitude, setUserLocation)
@@ -184,19 +200,8 @@ export default function Hero() {
   //   setBarcodeValue("");
   // };
 
-  // const handleToggleTorch = () => {
-  //   toggleTorch(videoRef, torchEnabled, setTorchEnabled);
-  // };
-
-  const getCurrentTimeStamp = () => {
-    const timeStamp = Date.now();
-    const dateObj = new Date(timeStamp);
-
-    const date = dateObj.toLocaleDateString();
-    const time = dateObj.toLocaleTimeString();
-
-    setDateTime(date + " " + time);
-    // return date + " " + time;
+  const handleToggleTorch = () => {
+    toggleTorch(videoRef, torchEnabled, setTorchEnabled);
   };
 
   return (
@@ -264,12 +269,12 @@ export default function Hero() {
         >
           Clear
         </button> */}
-        {/* <button
+        {startScan && <button
           className="torch-btn p-2 bg-blue-600 text-white m-2 w-full rounded font-medium md:w-1/2"
           onClick={handleToggleTorch}
         >
           {torchEnabled ? "Disable Torch" : "Enable Torch"}
-        </button> */}
+        </button>}
         {/* <section>
         {modalOpen && (
         <div className="fixed inset-0 z-10 flex items-center justify-center">
