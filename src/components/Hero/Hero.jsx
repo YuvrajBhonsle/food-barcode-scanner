@@ -22,6 +22,7 @@ export default function Hero() {
   const [userLocation, setUserLocation] = useState("");
   const [torchEnabled, setTorchEnabled] = useState(false);
   const [apiStatus, setApiStatus] = useState("Scanning...");
+  const [scanButtonState, setScanButtonState] = useState(false);
   // const [modalOpen, setModalOpen] = useState(false);
   const videoRef = useRef(null);
   const codeReaderRef = useRef(null);
@@ -83,9 +84,9 @@ export default function Hero() {
 
   useEffect(() => {
     if (barcodeValue && barcodeValue !== prevBarcodeValueRef.current) {
-      prevBarcodeValueRef.current = barcodeValue;
+      // prevBarcodeValueRef.current = barcodeValue;
       postData();
-      setStartScan(false);
+      // setStartScan(false);
       setApiData(null);
     }
   }, [barcodeValue]);
@@ -169,6 +170,7 @@ export default function Hero() {
         retriesRef.current = 1;
         setBarcodeValue("");
       }
+      setScanButtonState(true);
       // setStartScan(false);
     }
   };
@@ -240,12 +242,13 @@ export default function Hero() {
         </>
       )}
       <div className="flex flex-col justify-center items-center w-1/2 md:flex-row mb-3">
-        {!startScan && (
+        {scanButtonState && (
           <button
             className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
             onClick={() => {
               setBarcodeValue("");
               setApiData(null);
+              setScanButtonState(false);
               setStartScan(true);
               setApiStatus("Scanning...");
             }}
