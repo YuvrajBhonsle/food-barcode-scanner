@@ -5,7 +5,7 @@ import { BrowserBarcodeReader, BrowserMultiFormatReader } from "@zxing/library";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import toggleTorch from "./torch";
+// import toggleTorch from "./torch";
 import { getDeviceLocation } from "./geoLocation";
 // import { reverseGeoLocation } from "./reverseGeoLocation";
 import handleUsername from "./username";
@@ -93,6 +93,7 @@ export default function Hero() {
   const postData = async () => {
     setApiStatus("Sending POST Request");
     setStartScan(false);
+    console.log(barcodeValue);
     const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
     try {
       const postResponse = await axios.post(POST_URL, {
@@ -200,9 +201,9 @@ export default function Hero() {
   //   setBarcodeValue("");
   // };
 
-  const handleToggleTorch = () => {
-    toggleTorch(videoRef, torchEnabled, setTorchEnabled);
-  };
+  // const handleToggleTorch = () => {
+  //   toggleTorch(videoRef, torchEnabled, setTorchEnabled);
+  // };
 
   return (
     <section className="flex flex-col justify-center items-center">
@@ -269,12 +270,12 @@ export default function Hero() {
         >
           Clear
         </button> */}
-        {startScan && <button
+        {/* {startScan && <button
           className="torch-btn p-2 bg-blue-600 text-white m-2 w-full rounded font-medium md:w-1/2"
           onClick={handleToggleTorch}
         >
           {torchEnabled ? "Disable Torch" : "Enable Torch"}
-        </button>}
+        </button>} */}
         {/* <section>
         {modalOpen && (
         <div className="fixed inset-0 z-10 flex items-center justify-center">
