@@ -97,12 +97,7 @@ export default function Hero() {
     const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
     try {
       const postResponse = await axios.post(POST_URL, {
-        data: {
-          number: [barcodeValue],
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
+        number: [barcodeValue]
       });
       console.log(postResponse);
 
@@ -232,7 +227,7 @@ export default function Hero() {
         <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
           {apiData === ""
             ? `No result found for ${barcodeValue}`
-            : `Barcode Data for ${barcodeValue} is : ${apiData}`}
+            : `Barcode Data for ${barcodeValue} is : ${apiData.barcode}`}
         </p>
       ) : (
         <>
@@ -300,8 +295,8 @@ export default function Hero() {
       </div>
       <div className="container mx-4 mb-4">
         {/* {apiData?.response} */}
-        {apiData?.data && (
-          <ProductInfo apiData={apiData?.data} itemsPerPage={5} />
+        {apiData?.response && (
+          <ProductInfo apiData={apiData?.response} itemsPerPage={5} />
         )}
       </div>
     </section>
