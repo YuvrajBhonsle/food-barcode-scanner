@@ -91,7 +91,7 @@ export default function Hero() {
   }, [barcodeValue]);
 
   const postData = async () => {
-    setApiStatus("Sending POST Request");
+    setApiStatus("Sending POST Request of barcode: " + barcodeValue);
     setStartScan(false);
     console.log(barcodeValue);
     const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
