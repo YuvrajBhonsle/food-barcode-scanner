@@ -11,6 +11,7 @@ import { getDeviceLocation } from "./geoLocation";
 import handleUsername from "./username";
 import Greeting from "./Greeting";
 import ProductInfo from "./ProductInfo";
+import FeaturesIcons from "./FeaturesIcons";
 
 export default function Hero() {
   const [barcodeValue, setBarcodeValue] = useState("");
@@ -23,6 +24,7 @@ export default function Hero() {
   const [torchEnabled, setTorchEnabled] = useState(false);
   const [apiStatus, setApiStatus] = useState("Scanning...");
   const [scanButtonState, setScanButtonState] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   // const [modalOpen, setModalOpen] = useState(false);
   const videoRef = useRef(null);
   const codeReaderRef = useRef(null);
@@ -60,14 +62,18 @@ export default function Hero() {
 
         // const formats = BarcodeFormat.ALL_FORMATS;
         // codeReader.decodeFromVideoElement(undefined, videoElement, handleScannerUpdate, formats);
-        codeReader.decodeFromVideoDevice(undefined, videoElement, handleScannerUpdate);
+        codeReader.decodeFromVideoDevice(
+          undefined,
+          videoElement,
+          handleScannerUpdate
+        );
       } catch (err) {
         console.error(err);
       }
     }
 
     return () => {
-      if (codeReader && typeof codeReader.reset === 'function') {
+      if (codeReader && typeof codeReader.reset === "function") {
         codeReader.reset();
       }
     };
@@ -83,7 +89,8 @@ export default function Hero() {
   };
 
   useEffect(() => {
-    if (barcodeValue && barcodeValue !== prevBarcodeValueRef.current) {
+    // if (barcodeValue && barcodeValue !== prevBarcodeValueRef.current) {
+    if (barcodeValue) {
       // prevBarcodeValueRef.current = barcodeValue;
       postData();
       // setStartScan(false);
@@ -98,7 +105,7 @@ export default function Hero() {
     const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
     try {
       const postResponse = await axios.post(POST_URL, {
-        number: [barcodeValue]
+        number: [barcodeValue],
       });
       console.log(postResponse);
 
@@ -149,8 +156,8 @@ export default function Hero() {
           retriesRef.current++;
           console.log(response);
           await fetchData();
-        } else{
-          setApiStatus(`No data found for ${barcodeValue}`)
+        } else {
+          setApiStatus(`No data found for ${barcodeValue}`);
         }
       }
     } catch (error) {
@@ -186,6 +193,22 @@ export default function Hero() {
     // return date + " " + time;
   };
 
+  const handleScanButtonClick = () => {
+    if (inputValue && inputValue.trim() !== "") {
+      setBarcodeValue(null);
+      setBarcodeValue(inputValue.trim());
+    // } else if(prevBarcodeValueRef.current == barcodeValue){
+    //   setBarcodeValue(prevBarcodeValueRef.current);
+    // }
+    }
+ 
+    setInputValue("");
+    setApiData(null);
+    // setScanButtonState(false);
+    setStartScan(true);
+    setApiStatus("Scanning...");
+  };
+
   // const handleScanButtonClick = () => {
   //   setStartScan(true);
   //   getDeviceLocation(setLatitude, setLongitude, setUserLocation)
@@ -206,6 +229,12 @@ export default function Hero() {
     <section className="flex flex-col justify-center items-center">
       <div>
         <h1 className="text-center text-2xl font-bold m-2">Food Scan Genius</h1>
+        <h1 className="text-center font-semibold mt-2">
+          Stay healthy, buy better
+        </h1>
+        <h1 className="text-center font-semibold mb-2">
+          Scan products to know details in a Jiffy
+        </h1>
         <h4 className="text-center">
           <Greeting />
         </h4>
@@ -213,8 +242,8 @@ export default function Hero() {
       <div className="barcode-scanner m-3 relative">
         <div
           className={`scanner-effect absolute top-0 left-0 right-0 bottom-0 border-2 border-green-500 ${
-            videoRef && startScan && !apiData 
-            ? "animate-[scannerAnimation_5s_linear_infinite]"
+            videoRef && startScan && !apiData
+              ? "animate-[scannerAnimation_5s_linear_infinite]"
               : "border-0 border-none animate-none"
           } pointer-events-none`}
         />
@@ -241,21 +270,30 @@ export default function Hero() {
           </h1>
         </>
       )}
-      <div className="flex flex-col justify-center items-center w-1/2 md:flex-row mb-3">
-        {scanButtonState && (
+      <div className="flex flex-col justify-center items-center w-1/2 gap-3 mt-3 mb-3">
+        <section className="flex my-4 justify-center items-center">
+          <input
+            type="number"
+            min={0}
+            inputMode="numeric"
+            placeholder="Scan/Enter Barcode"
+            className="outline-none border border-r-0 border-green-500 rounded-tl-md rounded-bl-md px-4 py-2"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            // onFocus={(e) => e.target.style.outlineColor = "green"}
+            // onBlur={(e) => e.target.style.outlineColor = "black"}
+          />
+          {/* {scanButtonState && ( */}
           <button
-            className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
-            onClick={() => {
-              setBarcodeValue("");
-              setApiData(null);
-              setScanButtonState(false);
-              setStartScan(true);
-              setApiStatus("Scanning...");
-            }}
+            className="scan-btn p-2 bg-green-600 text-white w-full rounded font-medium md:w-1/2 border-none"
+            onClick={handleScanButtonClick}
           >
-            Start New Scan
+            Scan
           </button>
-        )}
+          {/* )} */}
+        </section>
+
+        <FeaturesIcons />
         {/* <button
           className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
           onClick={handleScanButtonClick}
