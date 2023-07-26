@@ -197,11 +197,11 @@ export default function Hero() {
     if (inputValue && inputValue.trim() !== "") {
       setBarcodeValue(null);
       setBarcodeValue(inputValue.trim());
-    // } else if(prevBarcodeValueRef.current == barcodeValue){
-    //   setBarcodeValue(prevBarcodeValueRef.current);
-    // }
+      // } else if(prevBarcodeValueRef.current == barcodeValue){
+      //   setBarcodeValue(prevBarcodeValueRef.current);
+      // }
     }
- 
+
     setInputValue("");
     setApiData(null);
     // setScanButtonState(false);
@@ -271,26 +271,22 @@ export default function Hero() {
         </>
       )}
       <div className="flex flex-col justify-center items-center w-1/2 gap-3 mt-3 mb-3">
-        <section className="flex my-4 justify-center items-center sm:max-w-[100vw] sm:w-[80%] sm:mx-2">
+        <section className="flex flex-col md:flex-row my-4 justify-center items-center">
           <input
             type="number"
             min={0}
             inputMode="numeric"
             placeholder="Scan/Enter Barcode"
-            className="outline-none border border-r-0 border-green-500 rounded-tl-md rounded-bl-md px-4 py-2 sm:w-[80%]"
+            className="outline-none border border-r-0 md:border-r md:border-green-500 rounded-tl-md rounded-bl-md md:rounded-tl-md md:rounded-bl-none px-4 py-2"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            // onFocus={(e) => e.target.style.outlineColor = "green"}
-            // onBlur={(e) => e.target.style.outlineColor = "black"}
           />
-          {/* {scanButtonState && ( */}
           <button
-            className="scan-btn p-2 bg-green-600 text-white w-full rounded font-medium md:w-1/2 border-none"
+            className="scan-btn p-2 bg-green-600 text-white w-full rounded font-medium md:w-1/2 md:rounded-tl-md md:rounded-bl-md md:border-l md:border-green-500 md:px-4 md:py-2 mt-2 md:mt-0"
             onClick={handleScanButtonClick}
           >
             Scan
           </button>
-          {/* )} */}
         </section>
 
         <FeaturesIcons />
