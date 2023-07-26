@@ -271,13 +271,13 @@ export default function Hero() {
         </>
       )}
       <div className="flex flex-col justify-center items-center w-1/2 gap-3 mt-3 mb-3">
-        <section className="flex my-4 justify-center items-center">
+        <section className="flex my-4 justify-center items-center sm:max-w-[100vw] sm:w-[80%] sm:mx-2">
           <input
             type="number"
             min={0}
             inputMode="numeric"
             placeholder="Scan/Enter Barcode"
-            className="outline-none border border-r-0 border-green-500 rounded-tl-md rounded-bl-md px-4 py-2"
+            className="outline-none border border-r-0 border-green-500 rounded-tl-md rounded-bl-md px-4 py-2 sm:w-[80%]"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             // onFocus={(e) => e.target.style.outlineColor = "green"}
