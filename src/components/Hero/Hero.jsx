@@ -135,6 +135,7 @@ export default function Hero() {
       const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
       const response = await axios.get(API_URL);
       if (response.status === 200 && response?.data !== "") {
+        console.log(response)
         console.log(response?.data);
         // console.log(response?.data?.data);
         setApiData(response?.data);
@@ -209,6 +210,11 @@ export default function Hero() {
     setStartScan(true);
     setApiStatus("Scanning...");
   };
+
+  function getZip(){
+    const ZIP_URL = `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`;
+    window.open(ZIP_URL, '_blank');
+  }
 
   // const handleScanButtonClick = () => {
   //   setStartScan(true);
@@ -289,6 +295,13 @@ export default function Hero() {
             Scan
           </button>
         </section>
+
+        <button
+            className="scan-btn p-2 bg-red-600 text-white w-full rounded font-medium md:w-1/2 md:rounded-tl-md md:rounded-bl-md md:border-l md:border-red-500 md:px-4 md:py-2 mt-2 md:mt-0"
+            onClick={getZip}
+          >
+            Download Zip
+          </button>
 
         <FeaturesIcons />
 
