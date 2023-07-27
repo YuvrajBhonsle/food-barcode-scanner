@@ -12,6 +12,7 @@ import handleUsername from "./username";
 import Greeting from "./Greeting";
 import ProductInfo from "./ProductInfo";
 import FeaturesIcons from "./FeaturesIcons";
+import LoginSection from "../LoginSection";
 
 export default function Hero() {
   const [barcodeValue, setBarcodeValue] = useState("");
@@ -277,7 +278,7 @@ export default function Hero() {
             min={0}
             inputMode="numeric"
             placeholder="Scan/Enter Barcode"
-            className="outline-none border border-r-0 md:border-r md:border-green-500 rounded-tl-md rounded-bl-md md:rounded-tl-md md:rounded-bl-none px-4 py-2"
+            className="outline-none border rounded-lg md:border-r md:border-green-500 rounded-tl-md rounded-bl-md md:rounded-tl-md px-4 py-2"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
@@ -290,6 +291,7 @@ export default function Hero() {
         </section>
 
         <FeaturesIcons />
+
         {/* <button
           className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
           onClick={handleScanButtonClick}
@@ -336,6 +338,9 @@ export default function Hero() {
           <ProductInfo apiData={apiData?.response} itemsPerPage={5} />
         )}
       </div>
+
+      <LoginSection />
+
     </section>
   );
 }

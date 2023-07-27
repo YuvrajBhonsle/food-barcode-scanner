@@ -3,6 +3,7 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router-dom";
 import Footer from './components/Footer'
+import Login from "./pages/Login";
 
 const Landing = lazy(() => import("./pages/Landing"));
 const FoodChoice = lazy(() => import("./pages/FoodChoice"));
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="/social" element={<Social />} />
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<Faq />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Suspense>
       <Footer />
