@@ -13,6 +13,9 @@ import Greeting from "./Greeting";
 import ProductInfo from "./ProductInfo";
 import FeaturesIcons from "./FeaturesIcons";
 import LoginSection from "../LoginSection";
+import JSZip from "jszip";
+import { Link } from "react-router-dom";
+import { useJsonDataStore } from "../../store/store";
 
 export default function Hero() {
   const [barcodeValue, setBarcodeValue] = useState("");
@@ -32,6 +35,14 @@ export default function Hero() {
   const prevBarcodeValueRef = useRef("");
   const maxRetries = 3;
   const retriesRef = useRef(1);
+
+  // const setOpenFoodFiles = useOpenFoodFilesStore(
+  //   (state) => state.setOpenFoodFiles
+  // );
+
+  const setJsonData = useJsonDataStore(
+    (state) => state.setJsonData
+  );
 
   useEffect(() => {
     handleUsername();
@@ -135,13 +146,14 @@ export default function Hero() {
       const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
       const response = await axios.get(API_URL);
       if (response.status === 200 && response?.data !== "") {
-        console.log(response)
+        console.log(response);
         console.log(response?.data);
         // console.log(response?.data?.data);
         setApiData(response?.data);
         // setStartScan(false);
         // console.log(response.data.response.barcode)
         retriesRef.current = 1;
+        getZip();
         // console.log(response.data.data.response);
       } else {
         if (retriesRef.current <= maxRetries && response?.data === "") {
@@ -199,21 +211,56 @@ export default function Hero() {
     if (inputValue && inputValue.trim() !== "") {
       setBarcodeValue(null);
       setBarcodeValue(inputValue.trim());
-      // } else if(prevBarcodeValueRef.current == barcodeValue){
-      //   setBarcodeValue(prevBarcodeValueRef.current);
-      // }
     }
 
     setInputValue("");
     setApiData(null);
-    // setScanButtonState(false);
     setStartScan(true);
     setApiStatus("Scanning...");
   };
 
-  function getZip(){
-    const ZIP_URL = `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`;
-    window.open(ZIP_URL, '_blank');
+  async function getZip() {
+    // const ZIP_URL = `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`;
+    // window.open(ZIP_URL, '_blank');
+    
+    try {
+      const response = await axios.get(
+        `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`,
+        {
+          responseType: "arraybuffer", // Important to receive binary data
+        }
+      );
+
+      console.log(response);
+      console.log(response.data);
+
+      const zip = new JSZip();
+      const zipData = await zip.loadAsync(response.data);
+
+      const openFoodFilesData = [];
+      for (const file in zipData.files) {
+        if (file.toLowerCase().includes('openfood')) {
+          const fileData = await zipData.files[file].async('string');
+      
+          try {
+            const jsonData = JSON.parse(fileData);
+            openFoodFilesData.push({ filename: file, content: jsonData });
+            console.log(`Content of ${file}:`, jsonData); // Log the JSON data
+            // setOpenFoodFiles(jsonData); // If needed, set the state with the JSON data
+            setJsonData(jsonData)
+            console.log(jsonData)
+          } catch (error) {
+            console.error(`Error parsing JSON in ${file}:`, error);
+          }
+        }
+      }
+
+      // setOpenFoodFiles(openFoodFilesData);
+      // console.log(openFoodFilesData);
+      // setOpenFoodFiles(openFoodFilesData);
+    } catch (error) {
+      console.error("Error fetching or unzipping the ZIP file:", error);
+    }
   }
 
   // const handleScanButtonClick = () => {
@@ -296,14 +343,22 @@ export default function Hero() {
           </button>
         </section>
 
-        <button
-            className="scan-btn p-2 bg-red-600 text-white w-full rounded font-medium md:w-1/2 md:rounded-tl-md md:rounded-bl-md md:border-l md:border-red-500 md:px-4 md:py-2 mt-2 md:mt-0"
-            onClick={getZip}
-          >
-            Download Zip
+        {apiData && (
+          <button className="scan-btn p-2 bg-red-600 text-white w-full rounded font-medium md:w-1/2 md:rounded-tl-md md:rounded-bl-md md:border-l md:border-red-500 md:px-4 md:py-2 mt-2 md:mt-0">
+            <Link to="/productScreen">View Product Details</Link>
           </button>
+        )}
 
         <FeaturesIcons />
+
+        {/* {openFoodFiles.map((fileData, index) => (
+        <div key={index} className="flex flex-col items-center justify-center max-w-[100vw] w-[80%]">
+          <h3>{fileData.filename}</h3>
+          <pre className="max-w-[100vw] w-[80%]">
+            <code className="max-w-[100vw] w-[80%] text-center break-words break-all">{fileData.content}</code>
+          </pre>
+        </div>
+      ))} */}
 
         {/* <button
           className="scan-btn p-2 bg-green-600 text-white m-2 w-full rounded font-medium md:w-1/2"
@@ -346,14 +401,12 @@ export default function Hero() {
         <ToastContainer position="bottom-center" theme="light" />
       </div>
       <div className="container mx-4 mb-4">
-        {/* {apiData?.response} */}
         {apiData?.response && (
           <ProductInfo apiData={apiData?.response} itemsPerPage={5} />
         )}
       </div>
 
       <LoginSection />
-
     </section>
   );
 }
