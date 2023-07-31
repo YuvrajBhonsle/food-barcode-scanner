@@ -122,6 +122,7 @@ const ProductScreenBody = ({
             weight={weight}
             country={country}
             category={category}
+            servingSize={servingSize}
           />
         )}
         {display === "Ingredients" && (

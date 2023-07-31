@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DescriptionSection = ({ brandName, weight, country, category }) => {
+const DescriptionSection = ({ brandName, weight, country, category, servingSize }) => {
   return (
     <section className="w-[80%] my-1 mx-auto">
       <div className="bg-white rounded-lg shadow-lg p-4">
@@ -13,6 +13,10 @@ const DescriptionSection = ({ brandName, weight, country, category }) => {
             <tr className="border-b">
               <td className="py-2 px-4 font-semibold">Manufacturer</td>
               <td className="py-2 px-4">{brandName}</td>
+            </tr>
+            <tr className="border-b">
+              <td className="py-2 px-4 font-semibold">Serving size</td>
+              <td className="py-2 px-4">{servingSize}</td>
             </tr>
             <tr className="border-b">
               <td className="py-2 px-4 font-semibold">Weight</td>

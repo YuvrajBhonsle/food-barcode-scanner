@@ -29,6 +29,7 @@ export default function Hero() {
   const [apiStatus, setApiStatus] = useState("Scanning...");
   const [scanButtonState, setScanButtonState] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [offData, setOffData] = useState(null);
   // const [modalOpen, setModalOpen] = useState(false);
   const videoRef = useRef(null);
   const codeReaderRef = useRef(null);
@@ -248,6 +249,7 @@ export default function Hero() {
             console.log(`Content of ${file}:`, jsonData); // Log the JSON data
             // setOpenFoodFiles(jsonData); // If needed, set the state with the JSON data
             setJsonData(jsonData)
+            setOffData(jsonData);
             console.log(jsonData)
           } catch (error) {
             console.error(`Error parsing JSON in ${file}:`, error);
@@ -343,10 +345,12 @@ export default function Hero() {
           </button>
         </section>
 
-        {apiData && (
+        {apiData && offData ? (
           <button className="scan-btn p-2 bg-red-600 text-white w-full rounded font-medium md:w-1/2 md:rounded-tl-md md:rounded-bl-md md:border-l md:border-red-500 md:px-4 md:py-2 mt-2 md:mt-0">
             <Link to="/productScreen">View Product Details</Link>
           </button>
+        ) : (
+          apiData && !offData && (<h1 className="text-center font-medium text-lg">No OFF Response found</h1>)
         )}
 
         <FeaturesIcons />

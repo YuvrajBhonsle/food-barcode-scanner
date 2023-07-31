@@ -29,9 +29,9 @@ const ProductScreen = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <header className="bg-white shadow-md">
+      {/* <header className="bg-white shadow-md">
         <h1 className="text-xl font-semibold text-center mb-1">Product Screen</h1>
-      </header>
+      </header> */}
 
       <div className="max-w-screen-lg mx-auto">
         <ProductScreenHeader
