@@ -13,7 +13,9 @@ const ProductScreen = () => {
   // const image = jsonData.image_ingredients_url;
 
   const barcodeValue = useJsonValue("id");
-  const image = useJsonValue("image_ingredients_url")
+  const imageIngredientsUrl = useJsonValue("image_ingredients_url");
+  const imageFrontUrl = useJsonValue("image_front_url");
+  const image = imageFrontUrl || imageIngredientsUrl;
   const productName = useJsonValue("product_name")
   const brandName = useJsonValue("brands")
   const servingSize = useJsonValue("serving_size");
@@ -27,11 +29,11 @@ const ProductScreen = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <header className="bg-white p-4 shadow-md">
-        <h1 className="text-2xl font-semibold text-center">Product Screen</h1>
+      <header className="bg-white shadow-md">
+        <h1 className="text-xl font-semibold text-center mb-1">Product Screen</h1>
       </header>
 
-      <div className="max-w-screen-lg mx-auto my-4">
+      <div className="max-w-screen-lg mx-auto">
         <ProductScreenHeader
           barcodeValue={barcodeValue}
           image={image}

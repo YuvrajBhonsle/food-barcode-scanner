@@ -2,7 +2,7 @@ import React from 'react';
 
 const DescriptionSection = ({ brandName, weight, country, category }) => {
   return (
-    <section className="w-[80%] my-4 mx-auto">
+    <section className="w-[80%] my-1 mx-auto">
       <div className="bg-white rounded-lg shadow-lg p-4">
         <table className="w-full break-all break-words">
           <tbody>

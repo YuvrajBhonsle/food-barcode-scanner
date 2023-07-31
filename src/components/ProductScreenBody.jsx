@@ -1,4 +1,7 @@
 import { FiCoffee } from "react-icons/fi";
+import {BsFillClipboard2DataFill} from "react-icons/bs"
+import {MdDescription, MdFoodBank} from "react-icons/md"
+import {GiMuscleUp} from "react-icons/gi"
 import { useState } from "react";
 import React from "react";
 import ClassificationSection from "./Classification";
@@ -67,7 +70,7 @@ const ProductScreenBody = ({
   );
 
   return (
-    <section className="mt-8 max-w-full overflow-scroll">
+    <section className="mt-3 max-w-full overflow-scroll">
       <main className="flex justify-center gap-4 sm:gap-8">
         <div
           onClick={() => setDisplay("Classification")}
@@ -77,7 +80,7 @@ const ProductScreenBody = ({
               : "border-none"
           }`}
         >
-          <FiCoffee style={{ fontSize: "1.35rem" }} />
+          <BsFillClipboard2DataFill style={{ fontSize: "2rem", color: display === "Classification" ? "#808080" : "black" }} />
           <h1 className="text-sm">Classification</h1>
         </div>
         <div
@@ -86,7 +89,7 @@ const ProductScreenBody = ({
             display === "Description" ? "border-b border-black" : "border-none"
           }`}
         >
-          <FiCoffee style={{ fontSize: "1.35rem" }} />
+          <MdDescription style={{ fontSize: "2rem", color: display === "Description" ? "#808080" : "black" }} />
           <h1 className="text-sm">Description</h1>
         </div>
         <div
@@ -95,7 +98,7 @@ const ProductScreenBody = ({
             display === "Ingredients" ? "border-b border-black" : "border-none"
           }`}
         >
-          <FiCoffee style={{ fontSize: "1.35rem" }} />
+          <MdFoodBank style={{ fontSize: "2rem", color: display === "Ingredients" ? "#808080" : "black" }} />
           <h1 className="text-sm">Ingredients</h1>
         </div>
         <div
@@ -104,12 +107,12 @@ const ProductScreenBody = ({
             display === "Nutrition" ? "border-b border-black" : "border-none"
           }`}
         >
-          <FiCoffee style={{ fontSize: "1.35rem" }} />
+          <GiMuscleUp style={{ fontSize: "2rem", color: display === "Nutrition" ? "#808080" : "black" }} />
           <h1 className="text-sm">Nutrition</h1>
         </div>
       </main>
 
-      <div className="max-w-full py-4">
+      <div className="max-w-full py-2">
         {display === "Classification" && (
           <ClassificationSection labelsArray={labelsArray} />
         )}
