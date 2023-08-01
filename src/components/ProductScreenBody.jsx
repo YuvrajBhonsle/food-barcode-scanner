@@ -120,7 +120,7 @@ const ProductScreenBody = ({
             display === "Recommendations" ? "border-b border-black" : "border-none"
           }`}
         >
-          <FaThumbsUp style={{ fontSize: "2rem", color: display === "Recommendations" ? "#808080" : "black" }} />
+          <FaThumbsUp style={{ fontSize: "1.75rem", color: display === "Recommendations" ? "#808080" : "black" }} />
           <h1 className="text-sm mt-1 text-center">Recommendations</h1>
         </div>
         <div
@@ -129,7 +129,7 @@ const ProductScreenBody = ({
             display === "ChatGPTFsg" ? "border-b border-black" : "border-none"
           }`}
         >
-          <SiOpenai style={{ fontSize: "2rem", color: display === "ChatGPT@FSG" ? "gray" : "black" }} />
+          <SiOpenai style={{ fontSize: "1.75rem", color: display === "ChatGPT@FSG" ? "gray" : "black" }} />
           <h1 className="text-sm mt-1 text-center">ChatGPT@FSG</h1>
         </div>
       </main>
