@@ -14,7 +14,7 @@ import ProductInfo from "./ProductInfo";
 import FeaturesIcons from "./FeaturesIcons";
 import LoginSection from "../LoginSection";
 import JSZip from "jszip";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useJsonDataStore } from "../../store/store";
 
 export default function Hero() {
@@ -44,6 +44,8 @@ export default function Hero() {
   const setJsonData = useJsonDataStore(
     (state) => state.setJsonData
   );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     handleUsername();
@@ -251,6 +253,9 @@ export default function Hero() {
             setJsonData(jsonData)
             setOffData(jsonData);
             console.log(jsonData)
+            if (jsonData !== null) {
+              navigate('/productScreen');
+            }
           } catch (error) {
             console.error(`Error parsing JSON in ${file}:`, error);
           }
@@ -284,11 +289,14 @@ export default function Hero() {
   return (
     <section className="flex flex-col justify-center items-center">
       <div>
-        <h1 className="text-center text-2xl font-bold m-2">Food Scan Genius</h1>
-        <h1 className="text-center font-semibold mt-2">
+        {/* <h1 className="text-center text-2xl font-bold m-2">Food Scan Genius</h1> */}
+        <header className="bg-white shadow-md min-w-[100vw] mb-1">
+        <h1 className="text-xl font-semibold text-center">Food Scan Genius</h1>
+      </header> 
+        <h1 className="text-center text-md font-semibold mt-1">
           Stay healthy, buy better
         </h1>
-        <h1 className="text-center font-semibold mb-2">
+        <h1 className="text-center text-md font-semibold mb-2">
           Scan products to know details in a Jiffy
         </h1>
         <h4 className="text-center">
