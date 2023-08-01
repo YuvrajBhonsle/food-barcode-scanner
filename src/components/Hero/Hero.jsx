@@ -112,7 +112,7 @@ export default function Hero() {
   }, [barcodeValue]);
 
   const postData = async () => {
-    setApiStatus("Sending POST Request of barcode: " + barcodeValue);
+    setApiStatus("Sending POST " + barcodeValue);
     setStartScan(false);
     console.log(barcodeValue);
     const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
@@ -142,7 +142,7 @@ export default function Hero() {
 
   const fetchData = async () => {
     try {
-      setApiStatus("Sending GET Request");
+      setApiStatus("Sending GET " + barcodeValue);
       // console.log("Fetch" + barcodeValue)
       const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
       const response = await axios.get(API_URL);
@@ -314,16 +314,16 @@ export default function Hero() {
         <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
           {apiData === ""
             ? `No result found for ${barcodeValue}`
-            : `Barcode Data for ${barcodeValue} is : ${apiData.barcode}`}
+            : `Barcode : ${apiData.barcode}`}
         </p>
       ) : (
         <>
           {!apiData && (
             <h1 className="text-center text-lg font-bold">{apiStatus}</h1>
           )}
-          <h1 className="text-center text-lg font-bold">
+          {/* <h1 className="text-center text-lg font-bold">
             Detected Barcode value: {barcodeValue ? barcodeValue : "-"}
-          </h1>
+          </h1> */}
         </>
       )}
       <div className="flex flex-col justify-center items-center w-1/2 gap-3 mt-3 mb-3">

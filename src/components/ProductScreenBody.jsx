@@ -2,12 +2,16 @@ import { FiCoffee } from "react-icons/fi";
 import {BsFillClipboard2DataFill} from "react-icons/bs"
 import {MdDescription, MdFoodBank} from "react-icons/md"
 import {GiMuscleUp} from "react-icons/gi"
+import {FaThumbsUp} from "react-icons/fa"
+import {SiOpenai} from "react-icons/si"
 import { useState } from "react";
 import React from "react";
 import ClassificationSection from "./Classification";
 import NutritionSection from "./Nutrients";
 import IngredientsSection from "./Ingredients";
 import DescriptionSection from "./Description";
+import Recommendations from "./Recommendations";
+import ChatGPTFsg from "./ChatGPTFSG";
 
 const ProductScreenBody = ({
   barcodeValue,
@@ -71,7 +75,7 @@ const ProductScreenBody = ({
 
   return (
     <section className="mt-3 max-w-full overflow-scroll">
-      <main className="flex justify-center gap-4 sm:gap-8">
+      <main className="flex justify-center items-center gap-3 sm:gap-2 break-all break-words px-1">
         <div
           onClick={() => setDisplay("Classification")}
           className={`flex flex-col items-center cursor-pointer pb-1 ${
@@ -81,7 +85,7 @@ const ProductScreenBody = ({
           }`}
         >
           <BsFillClipboard2DataFill style={{ fontSize: "2rem", color: display === "Classification" ? "#808080" : "black" }} />
-          <h1 className="text-sm">Classification</h1>
+          <h1 className="text-sm mt-1 text-center">Classification</h1>
         </div>
         <div
           onClick={() => setDisplay("Description")}
@@ -90,7 +94,7 @@ const ProductScreenBody = ({
           }`}
         >
           <MdDescription style={{ fontSize: "2rem", color: display === "Description" ? "#808080" : "black" }} />
-          <h1 className="text-sm">Description</h1>
+          <h1 className="text-sm mt-1 text-center">Description</h1>
         </div>
         <div
           onClick={() => setDisplay("Ingredients")}
@@ -99,7 +103,7 @@ const ProductScreenBody = ({
           }`}
         >
           <MdFoodBank style={{ fontSize: "2rem", color: display === "Ingredients" ? "#808080" : "black" }} />
-          <h1 className="text-sm">Ingredients</h1>
+          <h1 className="text-sm mt-1 text-center">Ingredients</h1>
         </div>
         <div
           onClick={() => setDisplay("Nutrition")}
@@ -108,7 +112,25 @@ const ProductScreenBody = ({
           }`}
         >
           <GiMuscleUp style={{ fontSize: "2rem", color: display === "Nutrition" ? "#808080" : "black" }} />
-          <h1 className="text-sm">Nutrition</h1>
+          <h1 className="text-sm mt-1 text-center">Nutrition</h1>
+        </div>
+        <div
+          onClick={() => setDisplay("Recommendations")}
+          className={`flex flex-col items-center cursor-pointer pb-1 ${
+            display === "Recommendations" ? "border-b border-black" : "border-none"
+          }`}
+        >
+          <FaThumbsUp style={{ fontSize: "2rem", color: display === "Recommendations" ? "#808080" : "black" }} />
+          <h1 className="text-sm mt-1 text-center">Recommendations</h1>
+        </div>
+        <div
+          onClick={() => setDisplay("ChatGPTFsg")}
+          className={`flex flex-col items-center cursor-pointer pb-1 ${
+            display === "ChatGPTFsg" ? "border-b border-black" : "border-none"
+          }`}
+        >
+          <SiOpenai style={{ fontSize: "2rem", color: display === "ChatGPT@FSG" ? "gray" : "black" }} />
+          <h1 className="text-sm mt-1 text-center">ChatGPT@FSG</h1>
         </div>
       </main>
 
@@ -133,6 +155,12 @@ const ProductScreenBody = ({
             filteredNutriments={filteredNutriments}
             nutritionDataGram={nutritionDataGram}
           />
+        )}
+        {display === "Recommendations" && (
+          <Recommendations />
+        )}
+        {display === "ChatGPTFsg" && (
+          <ChatGPTFsg />
         )}
       </div>
     </section>
