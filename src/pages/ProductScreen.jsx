@@ -25,7 +25,8 @@ const ProductScreen = () => {
   const ingredients = useJsonValue("ingredients_text");
   const nutritionDataGram = useJsonValue("nutrition_data_per");
   const nutritionData = useJsonValue("nutriments");
-  const labels = useJsonValue("labels")
+  const labels = useJsonValue("labels");
+  const ingredientsFilter = useJsonValue("ingredients");
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -56,6 +57,7 @@ const ProductScreen = () => {
           nutritionDataGram={nutritionDataGram}
           nutritionData={nutritionData}
           labels={labels}
+          ingredientsFilter={ingredientsFilter}
         />
       </div>
     </div>

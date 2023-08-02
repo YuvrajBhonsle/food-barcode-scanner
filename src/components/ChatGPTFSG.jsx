@@ -12,8 +12,7 @@ const ChatGPTFsg = () => {
       <section className="min-w-[100vw] min-h-[80vh] h-full flex justify-center items-center">
         <iframe
           src="https://app.writesonic.com/share/botsonic/2d1e54af-94b4-43b3-9c8e-3ee02d53e54e"
-          frameborder="0"
-          height={800}
+          height={800}     
         ></iframe>
       </section>
     </div>

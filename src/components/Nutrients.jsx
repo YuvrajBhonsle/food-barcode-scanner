@@ -7,15 +7,15 @@ const NutritionSection = ({ filteredNutriments, nutritionDataGram }) => {
         <table className="w-full">
           <thead>
             <tr>
-              <th className="py-2 px-4 font-bold">Nutrient</th>
+              <th className="py-2 px-4 font-bold ">Nutrient</th>
               <th className="py-2 px-4 font-bold">Value (per {nutritionDataGram})</th>
             </tr>
           </thead>
           <tbody>
             {filteredNutriments?.map(([key, value], index) => (
               <tr key={index} className="border-b">
-                <td className="py-2 px-4 font-semibold">{key.replace('_100g', '')}</td>
-                <td className="py-2 px-4">{value}</td>
+                <td className="py-2 px-4 font-semibold w-[25%]">{key.replace('_100g', '')}</td>
+                <td className="py-2 px-4 w-[75%] text-center">{value.toFixed(3)}</td>
               </tr>
             ))}
           </tbody>

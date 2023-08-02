@@ -1,9 +1,9 @@
 import { FiCoffee } from "react-icons/fi";
-import {BsFillClipboard2DataFill} from "react-icons/bs"
-import {MdDescription, MdFoodBank} from "react-icons/md"
-import {GiMuscleUp} from "react-icons/gi"
-import {FaThumbsUp} from "react-icons/fa"
-import {SiOpenai} from "react-icons/si"
+import { BsFillClipboard2DataFill } from "react-icons/bs";
+import { MdDescription, MdFoodBank } from "react-icons/md";
+import { GiMuscleUp } from "react-icons/gi";
+import { FaThumbsUp } from "react-icons/fa";
+import { SiOpenai } from "react-icons/si";
 import { useState } from "react";
 import React from "react";
 import ClassificationSection from "./Classification";
@@ -26,10 +26,34 @@ const ProductScreenBody = ({
   nutritionDataGram,
   nutritionData,
   labels,
+  ingredientsFilter,
 }) => {
   const [display, setDisplay] = useState("Classification");
 
   const labelsArray = labels?.split(",");
+
+  const checkVeganAndVegetarianValues = (ingredients) => {
+    let vegan = "yes";
+    let vegetarian = "yes";
+
+    ingredients.forEach((ingredient) => {
+      if (ingredient.vegan === "no") {
+        vegan = "no";
+      }
+      if (ingredient.vegetarian === "no") {
+        vegetarian = "no";
+      }
+      if (ingredient.vegan === "maybe" || ingredient.vegetarian === "maybe") {
+        vegan = "maybe";
+        vegetarian = "maybe";
+      }
+    });
+
+    return { vegan, vegetarian };
+  };
+
+  const { vegan, vegetarian } =
+    checkVeganAndVegetarianValues(ingredientsFilter);
 
   // const parseIngredients = (ingredientString) => {
   //   const regex = /([^,(]+(?: \([^)]+\))?)(?: \(([^)]+)\))?/g;
@@ -84,7 +108,12 @@ const ProductScreenBody = ({
               : "border-none"
           }`}
         >
-          <BsFillClipboard2DataFill style={{ fontSize: "2rem", color: display === "Classification" ? "#808080" : "black" }} />
+          <BsFillClipboard2DataFill
+            style={{
+              fontSize: "2rem",
+              color: display === "Classification" ? "#808080" : "black",
+            }}
+          />
           <h1 className="text-sm mt-1 text-center">Classification</h1>
         </div>
         <div
@@ -93,7 +122,12 @@ const ProductScreenBody = ({
             display === "Description" ? "border-b border-black" : "border-none"
           }`}
         >
-          <MdDescription style={{ fontSize: "2rem", color: display === "Description" ? "#808080" : "black" }} />
+          <MdDescription
+            style={{
+              fontSize: "2rem",
+              color: display === "Description" ? "#808080" : "black",
+            }}
+          />
           <h1 className="text-sm mt-1 text-center">Description</h1>
         </div>
         <div
@@ -102,7 +136,12 @@ const ProductScreenBody = ({
             display === "Ingredients" ? "border-b border-black" : "border-none"
           }`}
         >
-          <MdFoodBank style={{ fontSize: "2rem", color: display === "Ingredients" ? "#808080" : "black" }} />
+          <MdFoodBank
+            style={{
+              fontSize: "2rem",
+              color: display === "Ingredients" ? "#808080" : "black",
+            }}
+          />
           <h1 className="text-sm mt-1 text-center">Ingredients</h1>
         </div>
         <div
@@ -111,16 +150,28 @@ const ProductScreenBody = ({
             display === "Nutrition" ? "border-b border-black" : "border-none"
           }`}
         >
-          <GiMuscleUp style={{ fontSize: "2rem", color: display === "Nutrition" ? "#808080" : "black" }} />
+          <GiMuscleUp
+            style={{
+              fontSize: "2rem",
+              color: display === "Nutrition" ? "#808080" : "black",
+            }}
+          />
           <h1 className="text-sm mt-1 text-center">Nutrition</h1>
         </div>
         <div
           onClick={() => setDisplay("Recommendations")}
           className={`flex flex-col items-center cursor-pointer pb-1 ${
-            display === "Recommendations" ? "border-b border-black" : "border-none"
+            display === "Recommendations"
+              ? "border-b border-black"
+              : "border-none"
           }`}
         >
-          <FaThumbsUp style={{ fontSize: "1.75rem", color: display === "Recommendations" ? "#808080" : "black" }} />
+          <FaThumbsUp
+            style={{
+              fontSize: "1.75rem",
+              color: display === "Recommendations" ? "#808080" : "black",
+            }}
+          />
           <h1 className="text-sm mt-1 text-center">Recommendations</h1>
         </div>
         <div
@@ -129,14 +180,23 @@ const ProductScreenBody = ({
             display === "ChatGPTFsg" ? "border-b border-black" : "border-none"
           }`}
         >
-          <SiOpenai style={{ fontSize: "1.75rem", color: display === "ChatGPT@FSG" ? "gray" : "black" }} />
+          <SiOpenai
+            style={{
+              fontSize: "1.75rem",
+              color: display === "ChatGPT@FSG" ? "gray" : "black",
+            }}
+          />
           <h1 className="text-sm mt-1 text-center">ChatGPT@FSG</h1>
         </div>
       </main>
 
       <div className="max-w-full py-2">
         {display === "Classification" && (
-          <ClassificationSection labelsArray={labelsArray} />
+          <ClassificationSection
+            labelsArray={labelsArray}
+            vegan={vegan}
+            vegetarian={vegetarian}
+          />
         )}
         {display === "Description" && (
           <DescriptionSection
@@ -156,12 +216,8 @@ const ProductScreenBody = ({
             nutritionDataGram={nutritionDataGram}
           />
         )}
-        {display === "Recommendations" && (
-          <Recommendations />
-        )}
-        {display === "ChatGPTFsg" && (
-          <ChatGPTFsg />
-        )}
+        {display === "Recommendations" && <Recommendations />}
+        {display === "ChatGPTFsg" && <ChatGPTFsg />}
       </div>
     </section>
   );
