@@ -1,10 +1,15 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 // import useOpenFoodFilesStore, {useJsonDataStore}  from "../store/store"; 
 import { useJsonValue } from "../store/store";
 import ProductScreenHeader from "../components/ProductScreenHeader";
 import ProductScreenBody from "../components/ProductScreenBody";
 
 const ProductScreen = () => {
+  const [parentBackgroundColor, setParentBackgroundColor] = useState(null);
+
+  const handleBackgroundColorChange = (backgroundColor) => {
+    setParentBackgroundColor(backgroundColor);
+  };
   // const openFoodFiles = useOpenFoodFilesStore((state) => state.openFoodFiles);
 
   // const jsonData = useJsonDataStore((state) => state.jsonData);
@@ -27,9 +32,10 @@ const ProductScreen = () => {
   const nutritionData = useJsonValue("nutriments");
   const labels = useJsonValue("labels");
   const ingredientsFilter = useJsonValue("ingredients");
+  const allergens = useJsonValue("allergens");
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen" style={{backgroundColor: parentBackgroundColor}}>
       {/* <header className="bg-white shadow-md">
         <h1 className="text-xl font-semibold text-center mb-1">Product Screen</h1>
       </header> */}
@@ -58,6 +64,8 @@ const ProductScreen = () => {
           nutritionData={nutritionData}
           labels={labels}
           ingredientsFilter={ingredientsFilter}
+          allergens={allergens}
+          onBackgroundColorChange={handleBackgroundColorChange}
         />
       </div>
     </div>

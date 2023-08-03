@@ -4,8 +4,7 @@ import { MdDescription, MdFoodBank } from "react-icons/md";
 import { GiMuscleUp } from "react-icons/gi";
 import { FaThumbsUp } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
-import { useState } from "react";
-import React from "react";
+import React, {useState, useEffect} from "react";
 import ClassificationSection from "./Classification";
 import NutritionSection from "./Nutrients";
 import IngredientsSection from "./Ingredients";
@@ -27,6 +26,8 @@ const ProductScreenBody = ({
   nutritionData,
   labels,
   ingredientsFilter,
+  allergens,
+  onBackgroundColorChange,
 }) => {
   const [display, setDisplay] = useState("Classification");
 
@@ -62,6 +63,21 @@ const ProductScreenBody = ({
   const { vegan, vegetarian, maybeIngredients } =
     checkVeganAndVegetarianValues(ingredientsFilter);
 
+    let backgroundColor;
+    if (vegan === "Yes" && vegetarian === "Yes") {
+      backgroundColor = "lightgreen";
+    } else if (vegetarian === "No") {
+      backgroundColor = "lightcoral";
+    } else if (vegan === "Maybe" || vegetarian === "Maybe") {
+      backgroundColor = "lightyellow";
+    }
+
+    useEffect(() => {
+      // Call the callback function provided by the parent
+      onBackgroundColorChange(backgroundColor);
+    }, [backgroundColor, onBackgroundColorChange]);
+
+    
   // const parseIngredients = (ingredientString) => {
   //   const regex = /([^,(]+(?: \([^)]+\))?)(?: \(([^)]+)\))?/g;
   //   const ingredientsArray = [];
@@ -103,6 +119,10 @@ const ProductScreenBody = ({
   const filteredNutriments = Object.entries(nutritionData)?.filter(
     ([key, value]) => key.includes("_100g") && value !== 0
   );
+
+  const modifiedAllergens = allergens
+    ?.split(",")
+    .map((allergen) => allergen.replace("en:", ""));
 
   return (
     <section className="mt-3 w-full overflow-scroll">
@@ -204,6 +224,7 @@ const ProductScreenBody = ({
             vegan={vegan}
             vegetarian={vegetarian}
             maybeIngredients={maybeIngredients}
+            allergens={modifiedAllergens}
           />
         )}
         {display === "Description" && (

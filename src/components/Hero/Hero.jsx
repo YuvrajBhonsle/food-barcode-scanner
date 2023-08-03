@@ -314,7 +314,7 @@ export default function Hero() {
         {videoRef && startScan && !apiData ? (
           <video ref={videoRef} className="video rounded-lg"></video>
         ) : (
-          <img src="/logo.jpg" />
+          <img src="/fsg-video.gif" className="rounded-lg" />
         )}
       </div>
 

@@ -2,8 +2,8 @@ import React from "react";
 
 const IngredientsSection = ({ ingredientsList }) => {
   return (
-    <section className="w-[80%] my-1 mx-auto">
-      <div className="bg-white rounded-lg shadow-lg p-4">
+    <section className="w-[95%] my-1 mx-auto">
+      <div className="bg-white rounded-lg shadow-lg p-1">
         <table className="w-full">
           <tbody>
             {ingredientsList?.map((ingredient, index) => (
