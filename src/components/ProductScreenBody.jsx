@@ -33,26 +33,33 @@ const ProductScreenBody = ({
   const labelsArray = labels?.split(",");
 
   const checkVeganAndVegetarianValues = (ingredients) => {
-    let vegan = "yes";
-    let vegetarian = "yes";
+    let vegan = "Yes";
+    let vegetarian = "Yes";
+    let maybeIngredients = [];
 
     ingredients?.forEach((ingredient) => {
       if (ingredient.vegan === "no") {
-        vegan = "no";
+        vegan = "No";
       }
       if (ingredient.vegetarian === "no") {
-        vegetarian = "no";
+        vegetarian = "No";
       }
       if (ingredient.vegan === "maybe" || ingredient.vegetarian === "maybe") {
-        vegan = "maybe";
-        vegetarian = "maybe";
+        vegan = "Maybe";
+        vegetarian = "Maybe";
+        // if(ingredient.id !== ""){
+        //   maybeIngredients.push(ingredient.id?.split('en:')[1])
+        // } else {
+        //   maybeIngredients.push(ingredient.text)
+        // }
+        maybeIngredients.push(ingredient.text);
       }
     });
 
-    return { vegan, vegetarian };
+    return { vegan, vegetarian, maybeIngredients };
   };
 
-  const { vegan, vegetarian } =
+  const { vegan, vegetarian, maybeIngredients } =
     checkVeganAndVegetarianValues(ingredientsFilter);
 
   // const parseIngredients = (ingredientString) => {
@@ -98,8 +105,8 @@ const ProductScreenBody = ({
   );
 
   return (
-    <section className="mt-3 max-w-full overflow-scroll">
-      <main className="flex justify-center items-center gap-3 sm:gap-2 break-all break-words px-1">
+    <section className="mt-3 w-full overflow-scroll">
+      <main className="flex items-center text-center gap-4 sm:gap-8 px-3 overflow-scroll">
         <div
           onClick={() => setDisplay("Classification")}
           className={`flex flex-col items-center cursor-pointer pb-1 ${
@@ -196,6 +203,7 @@ const ProductScreenBody = ({
             labelsArray={labelsArray}
             vegan={vegan}
             vegetarian={vegetarian}
+            maybeIngredients={maybeIngredients}
           />
         )}
         {display === "Description" && (

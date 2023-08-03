@@ -41,9 +41,7 @@ export default function Hero() {
   //   (state) => state.setOpenFoodFiles
   // );
 
-  const setJsonData = useJsonDataStore(
-    (state) => state.setJsonData
-  );
+  const setJsonData = useJsonDataStore((state) => state.setJsonData);
 
   const navigate = useNavigate();
 
@@ -225,7 +223,7 @@ export default function Hero() {
   async function getZip() {
     // const ZIP_URL = `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`;
     // window.open(ZIP_URL, '_blank');
-    
+
     try {
       const response = await axios.get(
         `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`,
@@ -242,19 +240,19 @@ export default function Hero() {
 
       const openFoodFilesData = [];
       for (const file in zipData.files) {
-        if (file.toLowerCase().includes('openfood')) {
-          const fileData = await zipData.files[file].async('string');
-      
+        if (file.toLowerCase().includes("openfood")) {
+          const fileData = await zipData.files[file].async("string");
+
           try {
             const jsonData = JSON.parse(fileData);
             openFoodFilesData.push({ filename: file, content: jsonData });
             console.log(`Content of ${file}:`, jsonData); // Log the JSON data
             // setOpenFoodFiles(jsonData); // If needed, set the state with the JSON data
-            setJsonData(jsonData)
+            setJsonData(jsonData);
             setOffData(jsonData);
-            console.log(jsonData)
+            console.log(jsonData);
             if (jsonData !== null) {
-              navigate('/productScreen');
+              navigate("/productScreen");
             }
           } catch (error) {
             console.error(`Error parsing JSON in ${file}:`, error);
@@ -290,9 +288,11 @@ export default function Hero() {
     <section className="flex flex-col justify-center items-center">
       <div>
         {/* <h1 className="text-center text-2xl font-bold m-2">Food Scan Genius</h1> */}
-        <header className="bg-white shadow-md min-w-[100vw] mb-1">
-        <h1 className="text-xl font-semibold text-center">Food Scan Genius</h1>
-      </header> 
+        <header className="bg-white shadow-md min-w-[100vw] pb-1 mb-1 hidden md:block">
+          <h1 className="text-xl font-semibold text-center">
+            Food Scan Genius
+          </h1>
+        </header>
         <h1 className="text-center text-md font-semibold mt-1">
           Stay healthy, buy better
         </h1>
@@ -358,7 +358,12 @@ export default function Hero() {
             <Link to="/productScreen">View Product Details</Link>
           </button>
         ) : (
-          apiData && !offData && (<h1 className="text-center font-medium text-lg">No OFF Response found</h1>)
+          apiData &&
+          !offData && (
+            <h1 className="text-center font-medium text-lg">
+              No OFF Response found
+            </h1>
+          )
         )}
 
         <FeaturesIcons />

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 // import {MdsRoundedMenu} from "react-icons/md";
-import {AiOutlineMenu} from "react-icons/ai";
+import { AiOutlineMenu } from "react-icons/ai";
 import { NavLink, Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -16,24 +16,20 @@ const Navbar = () => {
   let [open, setOpen] = useState(false);
   return (
     <div className="shadow-md w-full block top-0 left-0">
-      <div className="md:flex items-center justify-between bg-white py-4 md:px-10 px-7">
-        {/* <div
-          className="font-bold text-2xl cursor-pointer flex items-center text-gray-800"
-        > */}
-          {/* <span className='text-3xl text-indigo-600 mr-1 pt-2'>
-      <ion-icon name="logo-ionic"></ion-icon>
-      </span>
-      Designer */}
+      <div className="md:flex items-center justify-between bg-white py-4 md:px-10 px-2">
+        <div className="flex items-center">
           <Link to="/" className="cursor-pointer p-0 m-0">
             <img src="/logo.jpg" alt="Logo" className="w-16 rounded" />
           </Link>
-        {/* </div> */}
+          <span className="text-lg text-center font-semibold pl-2 pr-8 w-[70%] md:hidden">
+            Food Scan Genius
+          </span>
+        </div>
 
         <div
           onClick={() => setOpen(!open)}
-          className="text-3xl absolute right-8 top-6 cursor-pointer md:hidden"
+          className="text-3xl absolute right-4 top-6 cursor-pointer md:hidden"
         >
-          {/* <ion-icon name={open ? 'close':'menu'}></ion-icon> */}
           {open ? <IoMdClose /> : <AiOutlineMenu />}
         </div>
 

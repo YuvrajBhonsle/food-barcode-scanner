@@ -11,8 +11,8 @@ const DescriptionSection = ({ brandName, weight, country, category, servingSize 
               <td className="py-2 px-4 w-[75%]">{brandName}</td>
             </tr>
             <tr className="border-b">
-              <td className="py-2 px-4 font-semibold w-[50%]">Manufacturer</td>
-              <td className="py-2 px-4 w-[75%]">{brandName}</td>
+              <td className="py-2 px-4 font-semibold w-[60%]">Manufacturer</td>
+              <td className="py-2 px-4 w-[40%]">{brandName}</td>
             </tr>
             <tr className="border-b">
               <td className="py-2 px-4 font-semibold w-[50%]">Serving size</td>

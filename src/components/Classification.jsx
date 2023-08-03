@@ -1,6 +1,11 @@
-import React from 'react';
+import React from "react";
 
-const ClassificationSection = ({ labelsArray, vegan, vegetarian }) => {
+const ClassificationSection = ({
+  labelsArray,
+  vegan,
+  vegetarian,
+  maybeIngredients,
+}) => {
   return (
     <section className="w-[80%] my-1 mx-auto">
       <div className="bg-white rounded-lg shadow-lg p-4">
@@ -21,6 +26,18 @@ const ClassificationSection = ({ labelsArray, vegan, vegetarian }) => {
             </tr>
           </tbody>
         </table>
+
+        {vegan === "Maybe" || vegetarian === "Maybe" ? (
+          <>
+            <h1 className="pt-6 font-semibold pb-2">Maybe Ingredients:</h1>
+            {maybeIngredients?.map((item, index) => (
+              <span key={index} className="pt-1">
+                {item}
+                {index !== maybeIngredients.length - 1 && ", "}
+              </span>
+            ))}
+          </>
+        ) : null}
       </div>
     </section>
   );
