@@ -64,7 +64,7 @@ const ProductScreenBody = ({
     checkVeganAndVegetarianValues(ingredientsFilter);
 
     let backgroundColor;
-    if (vegan === "Yes" && vegetarian === "Yes") {
+    if (vegan === "Yes" || vegetarian === "Yes") {
       backgroundColor = "lightgreen";
     } else if (vegetarian === "No") {
       backgroundColor = "lightcoral";
