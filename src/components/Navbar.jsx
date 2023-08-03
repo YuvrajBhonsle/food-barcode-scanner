@@ -22,7 +22,9 @@ const Navbar = () => {
             <img src="/logo.jpg" alt="Logo" className="w-16 rounded" />
           </Link>
           <span className="text-lg text-center font-semibold pl-2 pr-8 w-[70%] md:hidden">
+          <Link to="/">
             Food Scan Genius
+            </Link>
           </span>
         </div>
 

@@ -220,6 +220,9 @@ export default function Hero() {
     setApiStatus("Scanning...");
   };
 
+  // --------- OFF code -------------
+  let jsonData = null;
+
   async function getZip() {
     // const ZIP_URL = `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`;
     // window.open(ZIP_URL, '_blank');
@@ -244,7 +247,7 @@ export default function Hero() {
           const fileData = await zipData.files[file].async("string");
 
           try {
-            const jsonData = JSON.parse(fileData);
+            jsonData = JSON.parse(fileData);
             openFoodFilesData.push({ filename: file, content: jsonData });
             console.log(`Content of ${file}:`, jsonData); // Log the JSON data
             // setOpenFoodFiles(jsonData); // If needed, set the state with the JSON data
@@ -311,10 +314,10 @@ export default function Hero() {
               : "border-0 border-none animate-none"
           } pointer-events-none`}
         />
-        {videoRef && startScan && !apiData ? (
+        {videoRef && startScan && !apiData && !offData ? (
           <video ref={videoRef} className="video rounded-lg"></video>
         ) : (
-          <img src="/fsg-video.gif" className="rounded-lg" />
+          <img src={offData === null && apiData ? "/not-found.gif" : "/fsg-video.gif"} className="rounded-lg" />
         )}
       </div>
 
