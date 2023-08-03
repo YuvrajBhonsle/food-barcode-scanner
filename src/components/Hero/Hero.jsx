@@ -317,7 +317,12 @@ export default function Hero() {
         {videoRef && startScan && !apiData && !offData ? (
           <video ref={videoRef} className="video rounded-lg"></video>
         ) : (
-          <img src={offData === null && apiData ? "/not-found.gif" : "/fsg-video.gif"} className="rounded-lg" />
+          <img
+            src={
+              offData === null && apiData ? "/not-found.gif" : "/fsg-video.gif"
+            }
+            className="rounded-lg"
+          />
         )}
       </div>
 
@@ -337,6 +342,13 @@ export default function Hero() {
           </h1> */}
         </>
       )}
+
+      {apiData && !offData && (
+        <h1 className="text-center font-medium text-lg">
+          No OFF Response found
+        </h1>
+      )}
+
       <div className="flex flex-col justify-center items-center w-1/2 gap-3 mt-3 mb-3">
         <section className="flex flex-col md:flex-row my-4 justify-center items-center">
           <input
@@ -356,7 +368,7 @@ export default function Hero() {
           </button>
         </section>
 
-        {apiData && offData ? (
+        {/* {apiData && offData ? (
           <button className="scan-btn p-2 bg-red-600 text-white w-full rounded font-medium md:w-1/2 md:rounded-tl-md md:rounded-bl-md md:border-l md:border-red-500 md:px-4 md:py-2 mt-2 md:mt-0">
             <Link to="/productScreen">View Product Details</Link>
           </button>
@@ -367,7 +379,7 @@ export default function Hero() {
               No OFF Response found
             </h1>
           )
-        )}
+        )} */}
 
         <FeaturesIcons />
 
