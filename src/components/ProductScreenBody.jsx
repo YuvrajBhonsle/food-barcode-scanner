@@ -36,7 +36,7 @@ const ProductScreenBody = ({
     let vegan = "yes";
     let vegetarian = "yes";
 
-    ingredients.forEach((ingredient) => {
+    ingredients?.forEach((ingredient) => {
       if (ingredient.vegan === "no") {
         vegan = "no";
       }
