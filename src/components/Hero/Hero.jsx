@@ -36,6 +36,7 @@ export default function Hero() {
   const prevBarcodeValueRef = useRef("");
   const maxRetries = 3;
   const retriesRef = useRef(1);
+  const subString = "Sending GET";
 
   // const setOpenFoodFiles = useOpenFoodFilesStore(
   //   (state) => state.setOpenFoodFiles
@@ -302,9 +303,9 @@ export default function Hero() {
         <h1 className="text-center text-md font-semibold mb-2">
           Scan products to know details in a Jiffy
         </h1>
-        <h4 className="text-center">
+        {/* <h4 className="text-center">
           <Greeting />
-        </h4>
+        </h4> */}
       </div>
       <div className="barcode-scanner m-3 relative">
         <div
@@ -315,14 +316,23 @@ export default function Hero() {
           } pointer-events-none`}
         />
         {videoRef && startScan && !apiData && !offData ? (
-          <video ref={videoRef} className="video rounded-lg"></video>
+          <video ref={videoRef} className="video rounded-lg h-[25%]"></video>
         ) : (
+          <>
+          {/* {!apiData && !offData && apiStatus.includes(subString) && (
+            <img src="/fsg-2.gif" className="rounded-lg"/>
+        )} */}
           <img
             src={
-              offData === null && apiData ? "/not-found.gif" : "/fsg-video.gif"
-            }
+              !apiData && !offData && apiStatus.includes(subString)
+                  ? "/fsg-2.gif"
+                  : offData === null && apiData
+                  ? "/not-found.gif"
+                  : "/fsg-video.gif"
+          }
             className="rounded-lg"
           />
+          </>
         )}
       </div>
 
@@ -345,7 +355,13 @@ export default function Hero() {
 
       {apiData && !offData && (
         <h1 className="text-center font-medium text-lg">
-          No OFF Response found
+          We have no record of this product, Sorry!
+        </h1>
+      )}
+
+      {!apiData && !offData && apiStatus.includes(subString) && (
+        <h1 className="text-center font-medium text-lg">
+          Between GET and Barcode
         </h1>
       )}
 
