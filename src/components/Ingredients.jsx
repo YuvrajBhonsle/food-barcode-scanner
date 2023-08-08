@@ -9,10 +9,10 @@ const IngredientsSection = ({ ingredientsList }) => {
             {ingredientsList?.map((ingredient, index) => (
               <React.Fragment key={index}>
                 <tr className="border-b">
-                  <td className="py-2 px-4 font-semibold w-[50%]">
+                  <td className="py-2 px-4 font-semibold w-[25%]">
                     {ingredient.key}
                   </td>
-                  <td className="py-2 px-4 w-[75%]">{ingredient.value}</td>
+                  <td className="py-2 px-4 w-[80%]">{ingredient.value}</td>
                 </tr>
               </React.Fragment>
             ))}

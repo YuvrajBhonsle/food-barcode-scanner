@@ -16,6 +16,7 @@ import LoginSection from "../LoginSection";
 import JSZip from "jszip";
 import { Link, useNavigate } from "react-router-dom";
 import { useJsonDataStore } from "../../store/store";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Hero() {
   const [barcodeValue, setBarcodeValue] = useState("");
@@ -120,6 +121,9 @@ export default function Hero() {
     try {
       const postResponse = await axios.post(POST_URL, {
         number: [barcodeValue],
+        gps: [latitude, longitude],
+        deviceId: [uuidv4()],
+        userId: [uuidv4()],
       });
       console.log(postResponse);
 
@@ -319,19 +323,19 @@ export default function Hero() {
           <video ref={videoRef} className="video rounded-lg h-[25%]"></video>
         ) : (
           <>
-          {/* {!apiData && !offData && apiStatus.includes(subString) && (
+            {/* {!apiData && !offData && apiStatus.includes(subString) && (
             <img src="/fsg-2.gif" className="rounded-lg"/>
         )} */}
-          <img
-            src={
-              !apiData && !offData && apiStatus.includes(subString)
+            <img
+              src={
+                !apiData && !offData && apiStatus.includes(subString)
                   ? "/fsg-2.gif"
                   : offData === null && apiData
                   ? "/not-found.gif"
                   : "/fsg-video.gif"
-          }
-            className="rounded-lg"
-          />
+              }
+              className="rounded-lg"
+            />
           </>
         )}
       </div>
@@ -347,23 +351,28 @@ export default function Hero() {
           {!apiData && (
             <h1 className="text-center text-lg font-bold">{apiStatus}</h1>
           )}
+          {apiData && !offData && jsonData == null && (
+            <h1 className="text-center font-medium text-lg">
+              We have no record of this product, Sorry!
+            </h1>
+          )}
           {/* <h1 className="text-center text-lg font-bold">
             Detected Barcode value: {barcodeValue ? barcodeValue : "-"}
           </h1> */}
         </>
       )}
 
-      {apiData && !offData && (
+      {/* {apiData && !offData && jsonData == null && (
         <h1 className="text-center font-medium text-lg">
           We have no record of this product, Sorry!
         </h1>
-      )}
+      )} */}
 
-      {!apiData && !offData && apiStatus.includes(subString) && (
+      {/* {!apiData && !offData && apiStatus.includes(subString) && (
         <h1 className="text-center font-medium text-lg">
           Between GET and Barcode
         </h1>
-      )}
+      )} */}
 
       <div className="flex flex-col justify-center items-center w-1/2 gap-3 mt-3 mb-3">
         <section className="flex flex-col md:flex-row my-4 justify-center items-center">

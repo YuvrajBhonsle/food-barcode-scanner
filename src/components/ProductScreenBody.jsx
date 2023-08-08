@@ -4,7 +4,7 @@ import { MdDescription, MdFoodBank } from "react-icons/md";
 import { GiMuscleUp } from "react-icons/gi";
 import { FaThumbsUp } from "react-icons/fa";
 import { SiOpenai } from "react-icons/si";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import ClassificationSection from "./Classification";
 import NutritionSection from "./Nutrients";
 import IngredientsSection from "./Ingredients";
@@ -53,7 +53,9 @@ const ProductScreenBody = ({
         // } else {
         //   maybeIngredients.push(ingredient.text)
         // }
-        maybeIngredients.push(ingredient.text);
+        maybeIngredients.push(
+          ingredient.text.replace(/\b\w/g, (l) => l.toUpperCase())
+        );
       }
     });
 
@@ -63,43 +65,19 @@ const ProductScreenBody = ({
   const { vegan, vegetarian, maybeIngredients } =
     checkVeganAndVegetarianValues(ingredientsFilter);
 
-    let backgroundColor;
-    if (vegan === "Yes" || vegetarian === "Yes") {
-      backgroundColor = "lightgreen";
-    } else if (vegetarian === "No") {
-      backgroundColor = "lightcoral";
-    } else if (vegan === "Maybe" || vegetarian === "Maybe") {
-      backgroundColor = "lightyellow";
-    }
+  let backgroundColor;
+  if (vegan === "Yes" || vegetarian === "Yes") {
+    backgroundColor = "lightgreen";
+  } else if (vegetarian === "No") {
+    backgroundColor = "lightcoral";
+  } else if (vegan === "Maybe" || vegetarian === "Maybe") {
+    backgroundColor = "lightyellow";
+  }
 
-    useEffect(() => {
-      // Call the callback function provided by the parent
-      onBackgroundColorChange(backgroundColor);
-    }, [backgroundColor, onBackgroundColorChange]);
-
-    
-  // const parseIngredients = (ingredientString) => {
-  //   const regex = /([^,(]+(?: \([^)]+\))?)(?: \(([^)]+)\))?/g;
-  //   const ingredientsArray = [];
-  //   let match;
-
-  //   while ((match = regex.exec(ingredientString))) {
-  //     const [, ingredientName, value] = match;
-  //     const processedValue = value ? value.replace(/,\s*/g, ', ') : 'N/A';
-  //     ingredientsArray.push({
-  //       name: ingredientName.trim(),
-  //       value: processedValue,
-  //     });
-  //   }
-
-  //   return ingredientsArray;
-  // };
-
-  // const ingredientsList = ingredients.split(/,(?!\s*$)(?![^(]*\))/).map(item => {
-  //   const [key, ...values] = item.split(/\(([^)]*)\)/);
-  //   const value = values.length > 0 ? values.join('') : 'N/A';
-  //   return { key: key.trim(), value };
-  // });
+  useEffect(() => {
+    // Call the callback function provided by the parent
+    onBackgroundColorChange(backgroundColor);
+  }, [backgroundColor, onBackgroundColorChange]);
 
   const ingredientsList = ingredients
     ?.split(/,(?!\s*$)(?![^(]*\))/)
@@ -110,7 +88,10 @@ const ProductScreenBody = ({
         // Add a closing parenthesis to the value if it contains an open parenthesis but no closing parenthesis
         value += ")";
       }
-      return { key: key.trim(), value };
+      return {
+        key: key.trim().replace(/\b\w/g, (l) => l.toUpperCase()),
+        value: value.replace(/\b\w/g, (l) => l.toUpperCase()),
+      };
     });
 
   // const ingredientsList = parseIngredients(ingredients);
@@ -122,7 +103,9 @@ const ProductScreenBody = ({
 
   const modifiedAllergens = allergens
     ?.split(",")
-    .map((allergen) => allergen.replace("en:", ""));
+    .map((allergen) =>
+      allergen.replace("en:", "").replace(/\b\w/g, (l) => l.toUpperCase())
+    );
 
   return (
     <section className="mt-3 w-full overflow-scroll">
