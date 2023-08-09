@@ -340,7 +340,7 @@ export default function Hero() {
         )}
       </div>
 
-      {apiData && !startScan ? (
+      {apiData && !startScan && offData && jsonData !== null ? (
         <p className="scanned-data text-lg m-3 font-semibold w-[80%] text-center">
           {apiData === ""
             ? `No result found for ${barcodeValue}`
