@@ -16,7 +16,7 @@ import LoginSection from "../LoginSection";
 import JSZip from "jszip";
 import { Link, useNavigate } from "react-router-dom";
 import { useJsonDataStore } from "../../store/store";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export default function Hero() {
   const [barcodeValue, setBarcodeValue] = useState("");
@@ -229,9 +229,6 @@ export default function Hero() {
   let jsonData = null;
 
   async function getZip() {
-    // const ZIP_URL = `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`;
-    // window.open(ZIP_URL, '_blank');
-
     try {
       const response = await axios.get(
         `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`,
@@ -257,11 +254,12 @@ export default function Hero() {
             console.log(`Content of ${file}:`, jsonData); // Log the JSON data
             // setOpenFoodFiles(jsonData); // If needed, set the state with the JSON data
             setJsonData(jsonData);
-            setOffData(jsonData);
-            console.log(jsonData);
             if (jsonData !== null) {
               navigate("/productScreen");
             }
+            // setOffData(jsonData);
+            // console.log("OFF Response" + offData)
+            console.log(jsonData);
           } catch (error) {
             console.error(`Error parsing JSON in ${file}:`, error);
           }
@@ -327,12 +325,18 @@ export default function Hero() {
             <img src="/fsg-2.gif" className="rounded-lg"/>
         )} */}
             <img
+              // src={
+              //   !apiData && !offData && apiStatus.includes(subString)
+              //     ? "/fsg-2.gif"
+              //     : offData === null && apiData
+              //     ? "/not-found.gif"
+              //     : "/fsg-video.gif"
+              // }
               src={
-                !apiData && !offData && apiStatus.includes(subString)
+                offData == null &&
+                jsonData == null && !apiData
                   ? "/fsg-2.gif"
-                  : offData === null && apiData
-                  ? "/not-found.gif"
-                  : "/fsg-video.gif"
+                  : "/not-found.gif"
               }
               className="rounded-lg"
             />
@@ -351,11 +355,13 @@ export default function Hero() {
           {!apiData && (
             <h1 className="text-center text-lg font-bold">{apiStatus}</h1>
           )}
-          {apiData && !offData && jsonData == null && (
-            <h1 className="text-center font-medium text-lg">
-              We have no record of this product, Sorry!
-            </h1>
-          )}
+          {apiData &&
+            offData == null &&
+            jsonData == null && (
+              <h1 className="text-center font-medium text-lg">
+                We have no record of this product, Sorry!
+              </h1>
+            )}
           {/* <h1 className="text-center text-lg font-bold">
             Detected Barcode value: {barcodeValue ? barcodeValue : "-"}
           </h1> */}
