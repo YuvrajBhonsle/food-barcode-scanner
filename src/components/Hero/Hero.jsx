@@ -117,7 +117,7 @@ export default function Hero() {
     setApiStatus("Sending POST " + barcodeValue);
     setStartScan(false);
     console.log(barcodeValue);
-    const POST_URL = `https://api.iplaya.in/barcode/v1/logs`;
+    const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
     try {
       const postResponse = await axios.post(POST_URL, {
         number: [barcodeValue],
