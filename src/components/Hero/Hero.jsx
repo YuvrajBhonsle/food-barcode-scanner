@@ -118,6 +118,7 @@ export default function Hero() {
     setStartScan(false);
     console.log(barcodeValue);
     const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
+    const POST_LOG_URL = `https://api.iplaya.in/barcode/v1/logs`;
     try {
       const postResponse = await axios.post(POST_URL, {
         number: [barcodeValue],
@@ -143,9 +144,23 @@ export default function Hero() {
         theme: "light",
       });
     }
+
+    try{
+      const logPostResponse = await axios.post(POST_LOG_URL, {
+        number: [barcodeValue],
+        gps: [latitude, longitude],
+        deviceId: [uuidv4()],
+        userId: [uuidv4()],
+      });
+      console.log(logPostResponse);
+    }
+    catch (error) {
+      console.error("Error in POST LOG request: ", error);
+    }
   };
 
   const fetchData = async () => {
+    const API_LOG_URL = `https://api.iplaya.in/barcode/v1/logs`;
     try {
       setApiStatus("Sending GET " + barcodeValue);
       // console.log("Fetch" + barcodeValue)
@@ -199,6 +214,13 @@ export default function Hero() {
       }
       setScanButtonState(true);
       // setStartScan(false);
+    }
+
+    try{
+      const logGetResponse = await axios.get(API_LOG_URL);
+      console.log(logGetResponse);
+    }catch(error){
+      console.error("Error in GET LOG request:", error);
     }
   };
 
