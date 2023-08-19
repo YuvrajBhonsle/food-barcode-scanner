@@ -122,9 +122,10 @@ export default function Hero() {
     try {
       const postResponse = await axios.post(POST_URL, {
         number: [barcodeValue],
-        gps: [latitude, longitude],
-        deviceId: [uuidv4()],
-        userId: [uuidv4()],
+        latitude: latitude,
+        longitude: longitude,
+        deviceId: uuidv4(),
+        userId: uuidv4(),
       });
       console.log(postResponse);
 
