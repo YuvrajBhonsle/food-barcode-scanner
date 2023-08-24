@@ -37,7 +37,7 @@ export default function Hero() {
   const prevBarcodeValueRef = useRef("");
   const maxRetries = 3;
   const retriesRef = useRef(1);
-  const subString = "Sending GET";
+  // const subString = "Sending GET";
 
   // const setOpenFoodFiles = useOpenFoodFilesStore(
   //   (state) => state.setOpenFoodFiles
@@ -47,17 +47,35 @@ export default function Hero() {
 
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   handleUsername();
+  //   getDeviceLocation(setLatitude, setLongitude, setUserLocation)
+  //   .then(() => getCurrentTimeStamp())
+  //   .catch((error) =>
+  //   console.error("Error in handleScanButtonClick:", error)
+  //   );
+  //   console.log(latitude, longitude, userLocation);
+  //   setStartScan(true);
+  //  // console.log("Scan start", startScan);
+  //  // setModalOpen(true);
+  // }, []);
+
   useEffect(() => {
-    handleUsername();
-    getDeviceLocation(setLatitude, setLongitude, setUserLocation)
-      .then(() => getCurrentTimeStamp())
-      .catch((error) =>
-        console.error("Error in handleScanButtonClick:", error)
-      );
-    setStartScan(true);
-    // console.log("Scan start", startScan);
-    // setModalOpen(true);
+    const getUserData = async () => {
+      try {
+        handleUsername();
+        getCurrentTimeStamp();
+        setStartScan(true);
+        await getDeviceLocation(setLatitude, setLongitude);
+        // console.log(latitude, longitude);
+      } catch (error) {
+        console.error("Error in fetching UserData:", error);
+      }
+    };
+    getUserData();
   }, []);
+
+  console.log(latitude, longitude)
 
   useEffect(() => {
     let codeReader;
@@ -122,10 +140,10 @@ export default function Hero() {
     try {
       const postResponse = await axios.post(POST_URL, {
         number: [barcodeValue],
-        latitude: latitude,
-        longitude: longitude,
-        deviceId: uuidv4(),
-        userId: uuidv4(),
+        latitude: [latitude],
+        longitude: [longitude],
+        deviceId: [uuidv4()],
+        userId: [uuidv4()],
       });
       console.log(postResponse);
 
@@ -148,10 +166,11 @@ export default function Hero() {
 
     try{
       const logPostResponse = await axios.post(POST_LOG_URL, {
-        number: [barcodeValue],
-        gps: [latitude, longitude],
-        deviceId: [uuidv4()],
-        userId: [uuidv4()],
+        "number": [barcodeValue],
+        "latitude": latitude,
+        "longitude": longitude,
+        "deviceId": uuidv4(),
+        "userId": uuidv4(),
       });
       console.log(logPostResponse);
     }
@@ -219,6 +238,7 @@ export default function Hero() {
 
     try{
       const logGetResponse = await axios.get(API_LOG_URL);
+      console.log("logGetResponse: ");
       console.log(logGetResponse);
     }catch(error){
       console.error("Error in GET LOG request:", error);

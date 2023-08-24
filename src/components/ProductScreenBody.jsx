@@ -109,7 +109,7 @@ const ProductScreenBody = ({
 
   return (
     <section className="mt-3 w-full overflow-scroll">
-      <main className="flex items-center text-center gap-4 sm:gap-8 px-3 overflow-scroll">
+      <main className="flex items-center text-center gap-4 sm:gap-8 px-3 overflow-scroll lg:overflow-hidden lg:justify-center">
         <div
           onClick={() => setDisplay("Classification")}
           className={`flex flex-col items-center cursor-pointer pb-1 ${
