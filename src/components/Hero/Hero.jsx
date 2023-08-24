@@ -140,8 +140,8 @@ export default function Hero() {
     try {
       const postResponse = await axios.post(POST_URL, {
         number: [barcodeValue],
-        latitude: [latitude],
-        longitude: [longitude],
+        latitude: [latitude || 0],
+        longitude: [longitude || 0],
         deviceId: [uuidv4()],
         userId: [uuidv4()],
       });
