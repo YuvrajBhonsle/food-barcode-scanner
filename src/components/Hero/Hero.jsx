@@ -403,7 +403,7 @@ export default function Hero() {
             offData == null &&
             jsonData == null && (
               <h1 className="text-center font-medium text-lg">
-                We have no record of this product, Sorry!
+                We have no record of product: {barcodeValue}, Sorry!
               </h1>
             )}
           {/* <h1 className="text-center text-lg font-bold">
