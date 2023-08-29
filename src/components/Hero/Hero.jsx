@@ -75,7 +75,8 @@ export default function Hero() {
     getUserData();
   }, []);
 
-  console.log(latitude, longitude)
+  // console.log(latitude, longitude)
+  // console.log(v4());
 
   useEffect(() => {
     let codeReader;
@@ -167,10 +168,10 @@ export default function Hero() {
     try{
       const logPostResponse = await axios.post(POST_LOG_URL, {
         "number": [barcodeValue],
-        "latitude": latitude || "0",
-        "longitude": longitude || "0",
-        "deviceId": uuidv4(),
-        "userId": uuidv4(),
+        "latitude": latitude?.toString() || "0",
+        "longitude": longitude?.toString() || "0",
+        "device_id": uuidv4(),
+        "user_id": uuidv4(),
       });
       console.log(logPostResponse);
     }
