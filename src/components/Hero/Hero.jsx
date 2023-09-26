@@ -39,10 +39,6 @@ export default function Hero() {
   const retriesRef = useRef(1);
   // const subString = "Sending GET";
 
-  // const setOpenFoodFiles = useOpenFoodFilesStore(
-  //   (state) => state.setOpenFoodFiles
-  // );
-
   const setJsonData = useJsonDataStore((state) => state.setJsonData);
 
   const navigate = useNavigate();
@@ -74,9 +70,6 @@ export default function Hero() {
     };
     getUserData();
   }, []);
-
-  // console.log(latitude, longitude)
-  // console.log(v4());
 
   useEffect(() => {
     let codeReader;
@@ -136,10 +129,8 @@ export default function Hero() {
     setApiStatus("Sending POST " + barcodeValue);
     setStartScan(false);
     console.log(barcodeValue);
-    const POST_URL = `https://api.iplaya.in/barcode/v1/barcode`;
-    const POST_LOG_URL = `https://api.iplaya.in/barcode/v1/logs`;
     try {
-      const postResponse = await axios.post(POST_URL, {
+      const postResponse = await axios.post(import.meta.env.VITE_POST_URL, {
         number: [barcodeValue],
         latitude: [latitude || "0"],
         longitude: [longitude || "0"],
@@ -165,38 +156,39 @@ export default function Hero() {
       });
     }
 
-    try{
-      const logPostResponse = await axios.post(POST_LOG_URL, {
-        "number": [barcodeValue],
-        "latitude": latitude?.toString() || "0",
-        "longitude": longitude?.toString() || "0",
-        "device_id": uuidv4(),
-        "user_id": uuidv4(),
-      });
+    try {
+      const logPostResponse = await axios.post(
+        import.meta.env.VITE_POST_LOG_URL,
+        {
+          number: [barcodeValue],
+          latitude: latitude?.toString() || "0",
+          longitude: longitude?.toString() || "0",
+          device_id: uuidv4(),
+          user_id: uuidv4(),
+        }
+      );
       console.log(logPostResponse);
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error in POST LOG request: ", error);
     }
   };
 
   const fetchData = async () => {
-    const API_LOG_URL = `https://api.iplaya.in/barcode/v1/logs`;
     try {
       setApiStatus("Sending GET " + barcodeValue);
       // console.log("Fetch" + barcodeValue)
-      const API_URL = `https://api.iplaya.in/barcode/v1/barcode?type=json&barcode=${barcodeValue}`;
-      const response = await axios.get(API_URL);
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}?type=json&barcode=${barcodeValue}`
+      );
       if (response.status === 200 && response?.data !== "") {
         console.log(response);
         console.log(response?.data);
-        // console.log(response?.data?.data);
+
         setApiData(response?.data);
-        // setStartScan(false);
-        // console.log(response.data.response.barcode)
+
         retriesRef.current = 1;
         getZip();
-        // console.log(response.data.data.response);
       } else {
         if (retriesRef.current <= maxRetries && response?.data === "") {
           toast.info(`Trying to fetch data ${retriesRef.current}`, {
@@ -237,11 +229,11 @@ export default function Hero() {
       // setStartScan(false);
     }
 
-    try{
-      const logGetResponse = await axios.get(API_LOG_URL);
+    try {
+      const logGetResponse = await axios.get(import.meta.env.VITE_API_LOG_URL);
       console.log("logGetResponse: ");
       console.log(logGetResponse);
-    }catch(error){
+    } catch (error) {
       console.error("Error in GET LOG request:", error);
     }
   };
@@ -275,7 +267,7 @@ export default function Hero() {
   async function getZip() {
     try {
       const response = await axios.get(
-        `https://api.iplaya.in/barcode/v1/barcode?type=zip&barcode=${barcodeValue}`,
+        `${import.meta.env.VITE_ZIP_URL}?type=zip&barcode=${barcodeValue}`,
         {
           responseType: "arraybuffer", // Important to receive binary data
         }
@@ -377,8 +369,7 @@ export default function Hero() {
               //     : "/fsg-video.gif"
               // }
               src={
-                offData == null &&
-                jsonData == null && !apiData
+                offData == null && jsonData == null && !apiData
                   ? "/fsg-2.gif"
                   : "/not-found.gif"
               }
@@ -399,13 +390,11 @@ export default function Hero() {
           {!apiData && (
             <h1 className="text-center text-lg font-bold">{apiStatus}</h1>
           )}
-          {apiData &&
-            offData == null &&
-            jsonData == null && (
-              <h1 className="text-center font-medium text-lg">
-                We have no record of product: {barcodeValue}, Sorry!
-              </h1>
-            )}
+          {apiData && offData == null && jsonData == null && (
+            <h1 className="text-center font-medium text-lg">
+              We have no record of product: {barcodeValue}, Sorry!
+            </h1>
+          )}
           {/* <h1 className="text-center text-lg font-bold">
             Detected Barcode value: {barcodeValue ? barcodeValue : "-"}
           </h1> */}
@@ -442,6 +431,7 @@ export default function Hero() {
             Scan
           </button>
         </section>
+        <FeaturesIcons />
 
         {/* {apiData && offData ? (
           <button className="scan-btn p-2 bg-red-600 text-white w-full rounded font-medium md:w-1/2 md:rounded-tl-md md:rounded-bl-md md:border-l md:border-red-500 md:px-4 md:py-2 mt-2 md:mt-0">
@@ -455,8 +445,6 @@ export default function Hero() {
             </h1>
           )
         )} */}
-
-        <FeaturesIcons />
 
         {/* {openFoodFiles.map((fileData, index) => (
         <div key={index} className="flex flex-col items-center justify-center max-w-[100vw] w-[80%]">
